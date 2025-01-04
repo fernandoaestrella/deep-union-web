@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
 // Fix for default marker icon
-delete L.Icon.Default.prototype._getIconUrl;
+// delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png').default,
   iconUrl: require('leaflet/dist/images/marker-icon.png').default,
@@ -28,7 +28,6 @@ interface UserData {
 
 interface MapViewProps {
   userCoordinates: string; // Changed to string
-  nearbyUsers: Array<{ id: string; coordinates: [number, number]; userData: UserData }>;
 }
 
 const CenterMapButton: React.FC<{ center: [number, number] }> = ({ center }) => {
