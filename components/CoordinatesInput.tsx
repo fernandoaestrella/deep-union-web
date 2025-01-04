@@ -30,9 +30,9 @@ const CoordinatesInput: React.FC = () => {
     <div className="mx-auto mt-4 w-full max-w-md">
       <h4 className="mb-2 text-lg font-semibold">Input your current coordinates</h4>
       <p className="mb-4 text-sm text-gray-600">
-        Valid examples:<br />
+        Examples:<br />
         Decimal: 40.7128, -74.0060<br />
-        DMS: 19°27'20.4"N 70°39'08.6"W
+        DMS: 19°27&apos;20.4&quot;N 70°39&apos;08.6&quot;W
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
