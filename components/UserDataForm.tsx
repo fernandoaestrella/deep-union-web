@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
 
-const UserDataForm: React.FC = () => {
+export interface UserData {
+  requests: Record<string, boolean>;
+  offers: Record<string, boolean>;
+  description: {
+    isMale: boolean;
+    isTaller: boolean;
+    isOlder: boolean;
+    hasFacialHair: boolean;
+    hasLongHair: boolean;
+    wearsGlasses: boolean;
+    upperColor: string;
+    lowerColor: string;
+  };
+}
+
+interface UserDataFormProps {
+  onSubmit: (data: UserData) => void;
+}
+
+const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
     const categories = [
     'Preservation',
     'Gratification',
@@ -10,13 +29,13 @@ const UserDataForm: React.FC = () => {
     'Reflection',
     'Knowledge'
   ];
-  
+
   const initialCategoryState = categories.reduce((acc, category) => {
     acc[category] = false;
     return acc;
   }, {} as Record<string, boolean>);
 
-  const [formData, setFormData] = useState({
+  const [formDataStructure, setFormDataStructure] = useState({
     requests: { ...initialCategoryState },
     offers: { ...initialCategoryState },
     description: {
@@ -38,7 +57,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name={`${section}-${category}`}
-            checked={formData[section][category]}
+            checked={formDataStructure[section][category]}
             onChange={(e) => handleCategoryChange(section, category, e.target.checked)}
             className="mr-2"
           />
@@ -48,7 +67,7 @@ const UserDataForm: React.FC = () => {
     </div>
   );
   const handleCategoryChange = (section: 'requests' | 'offers', category: string, checked: boolean) => {
-    setFormData(prevState => ({
+    setFormDataStructure(prevState => ({
       ...prevState,
       [section]: {
         ...prevState[section],
@@ -58,7 +77,7 @@ const UserDataForm: React.FC = () => {
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    setFormData(prevState => ({
+    setFormDataStructure(prevState => ({
       ...prevState,
       description: {
         ...prevState.description,
@@ -71,9 +90,15 @@ const UserDataForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(JSON.stringify(formData, null, 2));
+    // Collect and validate form data
+    const formData: UserData = {
+      requests: formDataStructure.requests,
+      offers: formDataStructure.offers,
+      description: formDataStructure.description,
+    };
+    onSubmit(formData);
   };
+
 
   return (
     <form className="mx-auto w-3/4 rounded bg-white p-6 shadow" onSubmit={handleSubmit}>
@@ -90,7 +115,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="isMale"
-            checked={formData.description.isMale}
+            checked={formDataStructure.description.isMale}
             onChange={handleChange}
           />
           <span>Do you look like a man?</span>
@@ -100,7 +125,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="isTaller"
-            checked={formData.description.isTaller}
+            checked={formDataStructure.description.isTaller}
             onChange={handleChange}
           /> Are you taller than median height?
         </label>
@@ -110,7 +135,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="isOlder"
-            checked={formData.description.isOlder}
+            checked={formDataStructure.description.isOlder}
             onChange={handleChange}
           /> Are you older than median age?
         </label>
@@ -119,11 +144,11 @@ const UserDataForm: React.FC = () => {
         <label>
           <input
             type="checkbox"
-            name={formData.description.isMale ? "hasFacialHair" : "hasLongHair"}
-            checked={formData.description.isMale ? formData.description.hasFacialHair : formData.description.hasLongHair}
+            name={formDataStructure.description.isMale ? "hasFacialHair" : "hasLongHair"}
+            checked={formDataStructure.description.isMale ? formDataStructure.description.hasFacialHair : formDataStructure.description.hasLongHair}
             onChange={handleChange}
           /> 
-          {formData.description.isMale ? "Do you have facial hair?" : "Does your hair reach below your shoulder?"}
+          {formDataStructure.description.isMale ? "Do you have facial hair?" : "Does your hair reach below your shoulder?"}
         </label>
       </div>
       <div>
@@ -131,7 +156,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="wearsGlasses"
-            checked={formData.description.wearsGlasses}
+            checked={formDataStructure.description.wearsGlasses}
             onChange={handleChange}
           /> Are you wearing glasses?
         </label>
@@ -139,7 +164,7 @@ const UserDataForm: React.FC = () => {
       <div className="mt-4">
         <label className="mb-2 block">
           Upper body clothing color:
-          <select name="upperColor" value={formData.description.upperColor} onChange={handleChange} className="ml-2 rounded border p-1">
+          <select name="upperColor" value={formDataStructure.description.upperColor} onChange={handleChange} className="ml-2 rounded border p-1">
             <option value="">Select color</option>
             <option value="white">White</option>
             <option value="black">Black</option>
@@ -158,7 +183,7 @@ const UserDataForm: React.FC = () => {
       <div className="mt-2">
         <label className="mb-2 block">
           Lower body clothing color:
-          <select name="lowerColor" value={formData.description.lowerColor} onChange={handleChange} className="ml-2 rounded border p-1">
+          <select name="lowerColor" value={formDataStructure.description.lowerColor} onChange={handleChange} className="ml-2 rounded border p-1">
             <option value="">Select color</option>
             <option value="white">White</option>
             <option value="black">Black</option>

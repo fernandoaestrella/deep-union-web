@@ -1,12 +1,18 @@
 import React from 'react';
 
-const MapView: React.FC = () => {
+interface MapViewProps {
+  coordinates: string;
+}
+
+const MapView: React.FC<MapViewProps> = ({ coordinates }) => {
+  // Implement map logic here
   return (
     <div>
-      <h4>See a map to see if someone has posted their data near you</h4>
-      {/* Add map or list view of nearby users */}
+      <p>Map view with coordinates: {coordinates}</p>
+      {/* Add map implementation here */}
     </div>
   );
 };
 
 export default MapView;
+

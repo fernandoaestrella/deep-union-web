@@ -1,26 +1,15 @@
 import React from 'react';
-
-interface UserData {
-  requests: Record<string, boolean>;
-  offers: Record<string, boolean>;
-  description: {
-    isMale: boolean;
-    isTaller: boolean;
-    isOlder: boolean;
-    hasFacialHair: boolean;
-    hasLongHair: boolean;
-    wearsGlasses: boolean;
-    upperColor: string;
-    lowerColor: string;
-  };
-}
+import { UserData } from './UserDataForm';
 
 interface PostDataProps {
-  userData: UserData;
+  userData: UserData | null;
   coordinates: string;
 }
 
 const PostData: React.FC<PostDataProps> = ({ userData, coordinates }) => {
+  if (!userData) {
+    return <p>Please fill in user data first.</p>;
+  }
   return (
     <div className="mt-8 rounded-lg bg-white p-4 shadow">
       <h4 className="mb-4 text-xl font-semibold">Post your data and coordinates to our database</h4>
@@ -51,6 +40,7 @@ const PostData: React.FC<PostDataProps> = ({ userData, coordinates }) => {
     </div>
   );
 };
+
 
 export default PostData;
 

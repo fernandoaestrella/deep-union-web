@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-const CoordinatesInput: React.FC = () => {
+interface CoordinatesInputProps {
+  onSubmit: (coordinates: string) => void;
+}
+
+const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
   const [coordinates, setCoordinates] = useState('');
   const [error, setError] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -21,6 +25,7 @@ const CoordinatesInput: React.FC = () => {
       console.log('Valid coordinates:', coordinates);
       setError('');
       setShowConfirmation(true);
+      onSubmit(coordinates);  // Call the onSubmit prop with the valid coordinates
     } else {
       setError('Invalid coordinates. Please use either decimal or DMS format.');
     }
