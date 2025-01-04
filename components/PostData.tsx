@@ -52,7 +52,7 @@ const PostData: React.FC<PostDataProps> = ({ userData, coordinates }) => {
       {showDialog && (
         <Dialog
           title="Success"
-          message="It works. Later, your data will have been posted to our database."
+          message="Posting to the database is not implemented yet. This is just a mockup for demonstration purposes."
           // message="Your data has been successfully posted to the database."
           onClose={() => setShowDialog(false)}
         />
