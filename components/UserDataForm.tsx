@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 const UserDataForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    needs: [],
-    supplies: [],
-    appearance: {
+    requests: [],
+    offers: [],
+    description: {
       isMale: false,
       isTaller: false,
       isOlder: false,
@@ -16,64 +16,66 @@ const UserDataForm: React.FC = () => {
     },
   });
 
+  const categories = [
+    'Preservation',
+    'Gratification',
+    'Definition',
+    'Acceptance',
+    'Expression',
+    'Reflection',
+    'Knowledge'
+  ];
+
+  const renderCheckboxes = (section: 'requests' | 'offers') => (
+    <div>
+      {categories.map(category => (
+        <label key={`${section}-${category}`}>
+          <input
+            type="checkbox"
+            name={section}
+            value={category}
+            checked={(formData[section] as string[]).includes(category)}
+            onChange={handleChange}
+          /> {category}
+        </label>
+      ))}
+    </div>
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
-    }));
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: checked
+          ? [...(prevState[name as keyof typeof prevState] as string[]), value]
+          : (prevState[name as keyof typeof prevState] as string[]).filter(item => item !== value)
+      }));
+    } else {
+      setFormData(prevState => ({
+        ...prevState,
+        description: {
+          ...prevState.description,
+          [name]: value
+        }
+      }));
+    }
   };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    console.log(formData);
+    console.log(JSON.stringify(formData, null, 2));
   };
+
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Needs</h3>
-      {/* Add checkboxes for needs */}
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            name="needs"
-            value="survival"
-            onChange={handleChange}
-          /> Survival
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="needs"
-            value="companionship"
-            onChange={handleChange}
-          /> Companionship
-        </label>
-        {/* Add more needs as checkboxes */}
-      </div>
+      <h3>Requests</h3>
+      {renderCheckboxes('requests')}
 
-      <h3>Supplies</h3>
-      {/* Add checkboxes for supplies */}
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            name="supplies"
-            value="food"
-            onChange={handleChange}
-          /> Food
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            name="supplies"
-            value="shelter"
-            onChange={handleChange}
-          /> Shelter
-        </label>
-        {/* Add more supplies as checkboxes */}
-      </div>
+      <h3>Offers</h3>
+      {renderCheckboxes('offers')}
 
       <h3>Appearance</h3>
       <div>
@@ -81,7 +83,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="isMale"
-            checked={formData.appearance.isMale}
+            checked={formData.description.isMale}
             onChange={handleChange}
           /> Do you look like a man?
         </label>
@@ -91,7 +93,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="isTaller"
-            checked={formData.appearance.isTaller}
+            checked={formData.description.isTaller}
             onChange={handleChange}
           /> Are you taller than median height?
         </label>
@@ -101,7 +103,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="isOlder"
-            checked={formData.appearance.isOlder}
+            checked={formData.description.isOlder}
             onChange={handleChange}
           /> Are you older than median age?
         </label>
@@ -110,11 +112,11 @@ const UserDataForm: React.FC = () => {
         <label>
           <input
             type="checkbox"
-            name={formData.appearance.isMale ? "hasFacialHair" : "hasLongHair"}
-            checked={formData.appearance.isMale ? formData.appearance.hasFacialHair : formData.appearance.hasLongHair}
+            name={formData.description.isMale ? "hasFacialHair" : "hasLongHair"}
+            checked={formData.description.isMale ? formData.description.hasFacialHair : formData.description.hasLongHair}
             onChange={handleChange}
           /> 
-          {formData.appearance.isMale ? "Do you have facial hair?" : "Does your hair reach below your shoulder?"}
+          {formData.description.isMale ? "Do you have facial hair?" : "Does your hair reach below your shoulder?"}
         </label>
       </div>
       <div>
@@ -122,7 +124,7 @@ const UserDataForm: React.FC = () => {
           <input
             type="checkbox"
             name="wearsGlasses"
-            checked={formData.appearance.wearsGlasses}
+            checked={formData.description.wearsGlasses}
             onChange={handleChange}
           /> Are you wearing glasses?
         </label>
@@ -130,7 +132,7 @@ const UserDataForm: React.FC = () => {
       <div>
         <label>
           Upper body clothing color:
-          <select name="upperColor" value={formData.appearance.upperColor} onChange={handleChange}>
+          <select name="upperColor" value={formData.description.upperColor} onChange={handleChange}>
             <option value="">Select color</option>
             <option value="white">White</option>
             <option value="black">Black</option>
@@ -149,7 +151,7 @@ const UserDataForm: React.FC = () => {
       <div>
         <label>
           Lower body clothing color:
-          <select name="lowerColor" value={formData.appearance.lowerColor} onChange={handleChange}>
+          <select name="lowerColor" value={formData.description.lowerColor} onChange={handleChange}>
             <option value="">Select color</option>
             <option value="white">White</option>
             <option value="black">Black</option>
