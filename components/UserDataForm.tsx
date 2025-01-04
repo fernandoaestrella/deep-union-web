@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 
 const UserDataForm: React.FC = () => {
+    const categories = [
+    'Preservation',
+    'Gratification',
+    'Definition',
+    'Acceptance',
+    'Expression',
+    'Reflection',
+    'Knowledge'
+  ];
+  
+  const initialCategoryState = categories.reduce((acc, category) => {
+    acc[category] = false;
+    return acc;
+  }, {} as Record<string, boolean>);
+
   const [formData, setFormData] = useState({
-    requests: [],
-    offers: [],
+    requests: { ...initialCategoryState },
+    offers: { ...initialCategoryState },
     description: {
       isMale: false,
       isTaller: false,
@@ -16,51 +31,40 @@ const UserDataForm: React.FC = () => {
     },
   });
 
-  const categories = [
-    'Preservation',
-    'Gratification',
-    'Definition',
-    'Acceptance',
-    'Expression',
-    'Reflection',
-    'Knowledge'
-  ];
-
   const renderCheckboxes = (section: 'requests' | 'offers') => (
     <div>
       {categories.map(category => (
         <label key={`${section}-${category}`}>
           <input
             type="checkbox"
-            name={section}
-            value={category}
-            checked={(formData[section] as string[]).includes(category)}
-            onChange={handleChange}
+            name={`${section}-${category}`}
+            checked={formData[section][category]}
+            onChange={(e) => handleCategoryChange(section, category, e.target.checked)}
           /> {category}
         </label>
       ))}
     </div>
   );
+  const handleCategoryChange = (section: 'requests' | 'offers', category: string, checked: boolean) => {
+    setFormData(prevState => ({
+      ...prevState,
+      [section]: {
+        ...prevState[section],
+        [category]: checked
+      }
+    }));
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: checked
-          ? [...(prevState[name as keyof typeof prevState] as string[]), value]
-          : (prevState[name as keyof typeof prevState] as string[]).filter(item => item !== value)
-      }));
-    } else {
-      setFormData(prevState => ({
-        ...prevState,
-        description: {
-          ...prevState.description,
-          [name]: value
-        }
-      }));
-    }
+    setFormData(prevState => ({
+      ...prevState,
+      description: {
+        ...prevState.description,
+        [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      }
+    }));
   };
+
 
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -164,7 +168,7 @@ const UserDataForm: React.FC = () => {
         </label>
       </div>
 
-      <button type="submit">Submit</button>
+      <button className="rounded bg-sky-300 px-4 py-2 font-bold text-white hover:bg-sky-400" type="submit">Submit</button>
     </form>
   );
 };
