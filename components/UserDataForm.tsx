@@ -117,6 +117,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
         {renderCheckboxes('offers')}
 
         <h3 className="mb-2 mt-6 text-lg font-medium">Appearance</h3>
+        <h4>Please answer in order, as several questions update after answering the first one</h4>
         <div className="space-y-2">
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -134,7 +135,11 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.isTaller}
               onChange={handleChange}
             />
-            <span>Are you taller than median height?</span>
+            <span>
+              {formDataStructure.description.isMale
+                ? "Are you taller than 5'9\" (175 cm)?"
+                : "Are you taller than 5'4\" (162 cm)?"}
+            </span>
           </label>
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -143,8 +148,13 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.isOlder}
               onChange={handleChange}
             />
-            <span>Are you older than median age?</span>
+            <span>
+              {formDataStructure.description.isMale
+                ? "Are you older than 30.3 years?"
+                : "Are you older than 31.8 years?"}
+            </span>
           </label>
+
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
               type="checkbox"
@@ -194,7 +204,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               <option value="gray">Gray</option>
               <option value="brown">Brown</option>
               <option value="blue">Blue</option>
-              <option value="other">Other</option>
+              <option value="other">Other (i.e. a color not included above)</option>
               <option value="none">None</option>
             </select>
           </label>

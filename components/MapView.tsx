@@ -49,10 +49,23 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
 
   // Function to convert coordinates string to [number, number]
   const convertCoordinates = (coords: string): [number, number] => {
-    // This function assumes the coordinates are in decimal format "latitude,longitude"
-    // If you need to handle DMS format, you'll need to implement a more complex conversion
-    const [lat, lng] = coords.split(',').map(Number);
-    return [lat, lng];
+    // Detect if coordinates are in DMS format or decimal
+    if (coords.includes('°')) {
+      // Handle DMS format
+      // TODO: Implement DMS to decimal conversion
+      const [lat, latDMS, latDir] = coords.split(' ');
+      const [lng, lngDMS, lngDir] = coords.split(' ').reverse();
+      const latDecimal = parseFloat(latDMS) + (parseFloat(lat.replace(',', '.')) / 60);
+      const lngDecimal = parseFloat(lngDMS) + (parseFloat(lng.replace(',', '.')) / 60);
+      const latFinal = latDir === 'N'? latDecimal : -latDecimal;
+      const lngFinal = lngDir === 'E'? lngDecimal : -lngDecimal;
+      return [latFinal, lngFinal];
+    } else
+    {
+      // Handle decimal format
+      const [lat, lng] = coords.split(',').map(Number);
+      return [lat, lng];
+    }
   };
 
   // Fetch nearby users

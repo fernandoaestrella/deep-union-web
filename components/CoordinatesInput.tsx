@@ -32,7 +32,7 @@ const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="mx-auto mt-4 w-full max-w-md">
+    <div className="mx-auto mt-4 w-full max-w-md rounded bg-white p-6 shadow">
       <h4 className="mb-2 text-lg font-semibold">Input your current coordinates</h4>
       <p className="mb-4 text-sm text-gray-600">
         Examples of valid coordinates:<br />
