@@ -38,7 +38,7 @@ export default function Home() {
 
       <section className="mb-8 w-full max-w-2xl">
         <h2 className="mb-4 text-2xl font-semibold">4. Map</h2>
-        <MapView coordinates={coordinates} />
+        <MapView userCoordinates={coordinates} />
       </section>
     </main>
   );

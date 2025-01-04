@@ -45,7 +45,7 @@ const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
             type="text"
             value={coordinates}
             onChange={(e) => setCoordinates(e.target.value)}
-            placeholder="Enter coordinates"
+            placeholder="Enter coordinates here"
             className="w-full rounded-md border px-3 py-2 text-gray-700 placeholder-gray-400 focus:border-blue-500 focus:outline-none"
           />
           {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
