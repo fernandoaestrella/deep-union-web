@@ -81,14 +81,27 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
   useEffect(() => {
     const fetchNearbyUsers = async () => {
       try {
-        // Test API call
-        const users = await prisma.users.findMany()
-        console.log(users)
-        
-        // Replace this with your actual API call
-        // const response = await fetch('/api/nearby-users');
-        // const data = await response.json();
-        // setNearbyUsers(data);
+        const response = await fetch('/api/users', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch nearby users');
+        }
+
+        const data = await response.json();
+        console.log('Nearby users:', data);
+
+        // Assuming the API returns an array of users with the correct structure
+        // You might need to transform the data if the structure is different
+        setNearbyUsers(data.map(user => ({
+          id: user.id,
+          coordinates: convertCoordinates(user.coordinates),
+          userData: user.userData
+        })));
       } catch (error) {
         console.error('Error fetching nearby users:', error);
       }
@@ -96,6 +109,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
 
     fetchNearbyUsers();
   }, []); // Empty dependency array means this effect runs once on mount
+
 
   // Update map center when userCoordinates change
   useEffect(() => {
