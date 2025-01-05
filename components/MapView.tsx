@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import prisma from '@/lib/prisma'
 
 // Fix for default marker icon
 // delete L.Icon.Default.prototype._getIconUrl;
@@ -80,10 +81,14 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
   useEffect(() => {
     const fetchNearbyUsers = async () => {
       try {
+        // Test API call
+        const users = await prisma.users.findMany()
+        console.log(users)
+        
         // Replace this with your actual API call
-        const response = await fetch('/api/nearby-users');
-        const data = await response.json();
-        setNearbyUsers(data);
+        // const response = await fetch('/api/nearby-users');
+        // const data = await response.json();
+        // setNearbyUsers(data);
       } catch (error) {
         console.error('Error fetching nearby users:', error);
       }
