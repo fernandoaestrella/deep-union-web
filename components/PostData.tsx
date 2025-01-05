@@ -15,23 +15,45 @@ const PostData: React.FC<PostDataProps> = ({ userData, coordinates }) => {
     return <p>Please fill in user data first.</p>;
   }
 
-  const handlePostData = () => {
-    if (!coordinates) {
-      setDialogTitle('Error');
-      setDialogMessage('Please input coordinates before posting.');
-      setShowDialog(true);
-      return;
-    }
-    // Here you would typically send the data to your backend
-    console.log('Posting data:', { userData, coordinates });
+  const handlePostData = async () => {
+      if (!coordinates) {
+        setDialogTitle('Error');
+        setDialogMessage('Please input coordinates before posting.');
+        setShowDialog(true);
+        return;
+      }
 
-    // Simulate a successful post
-    setTimeout(() => {
-      setDialogTitle('Success');
-      setDialogMessage('Posting to the database is not implemented yet. This is just a mockup for demonstration purposes.');
-      setShowDialog(true);
-    }, 1000);
-  };
+      try {
+        const response = await fetch('/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            coordinates,
+            userData: {
+              requests: userData.requests,
+              offers: userData.offers,
+              description: userData.description,
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to post user data');
+        }
+
+        const result = await response.json();
+        setDialogTitle('Success');
+        setDialogMessage('User data successfully posted to the database.');
+        setShowDialog(true);
+      } catch (error) {
+        console.error('Error posting user data:', error);
+        setDialogTitle('Error');
+        setDialogMessage('Failed to post user data. Please try again.');
+        setShowDialog(true);
+      }
+    };
 
   return (
     <>

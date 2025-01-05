@@ -93,7 +93,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
         }
 
         const data = await response.json();
-        console.log('Nearby users:', data);
+        console.log('Fetched users:', data);
 
         // Assuming the API returns an array of users with the correct structure
         // You might need to transform the data if the structure is different
