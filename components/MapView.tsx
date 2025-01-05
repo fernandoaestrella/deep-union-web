@@ -51,22 +51,30 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
   const convertCoordinates = (coords: string): [number, number] => {
     // Detect if coordinates are in DMS format or decimal
     if (coords.includes('°')) {
-      // Handle DMS format
-      // TODO: Implement DMS to decimal conversion
-      const [lat, latDMS, latDir] = coords.split(' ');
-      const [lng, lngDMS, lngDir] = coords.split(' ').reverse();
-      const latDecimal = parseFloat(latDMS) + (parseFloat(lat.replace(',', '.')) / 60);
-      const lngDecimal = parseFloat(lngDMS) + (parseFloat(lng.replace(',', '.')) / 60);
-      const latFinal = latDir === 'N'? latDecimal : -latDecimal;
-      const lngFinal = lngDir === 'E'? lngDecimal : -lngDecimal;
-      return [latFinal, lngFinal];
-    } else
-    {
+      // Convert DMS to decimal
+      const dmsToDecimal = (dms: string, direction: string): number => {
+        const parts = dms.split(/[°'"]+/).map(part => parseFloat(part.trim()));
+        let decimal = parts[0] + (parts[1] || 0) / 60 + (parts[2] || 0) / 3600;
+        if (direction === 'S' || direction === 'W') {
+          decimal = -decimal;
+        }
+        return parseFloat(decimal.toFixed(6)); // Round to 6 decimal places
+      };
+
+      const [latDMS, lngDMS] = coords.split(/\s+/);
+      const latDirection = latDMS.slice(-1);
+      const lngDirection = lngDMS.slice(-1);
+
+      const latDecimal = dmsToDecimal(latDMS, latDirection);
+      const lngDecimal = dmsToDecimal(lngDMS, lngDirection);
+      return [latDecimal, lngDecimal];
+    } else {
       // Handle decimal format
       const [lat, lng] = coords.split(',').map(Number);
       return [lat, lng];
     }
   };
+
 
   // Fetch nearby users
   useEffect(() => {

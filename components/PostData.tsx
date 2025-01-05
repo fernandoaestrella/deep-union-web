@@ -9,19 +9,30 @@ interface PostDataProps {
 
 const PostData: React.FC<PostDataProps> = ({ userData, coordinates }) => {
   const [showDialog, setShowDialog] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogMessage, setDialogMessage] = useState('');
   if (!userData) {
     return <p>Please fill in user data first.</p>;
   }
 
   const handlePostData = () => {
+    if (!coordinates) {
+      setDialogTitle('Error');
+      setDialogMessage('Please input coordinates before posting.');
+      setShowDialog(true);
+      return;
+    }
     // Here you would typically send the data to your backend
     console.log('Posting data:', { userData, coordinates });
 
     // Simulate a successful post
     setTimeout(() => {
+      setDialogTitle('Success');
+      setDialogMessage('Posting to the database is not implemented yet. This is just a mockup for demonstration purposes.');
       setShowDialog(true);
     }, 1000);
   };
+
   return (
     <>
       <div className="mt-8 rounded-lg bg-white p-4 shadow">
@@ -51,9 +62,8 @@ const PostData: React.FC<PostDataProps> = ({ userData, coordinates }) => {
 
       {showDialog && (
         <Dialog
-          title="Success"
-          message="Posting to the database is not implemented yet. This is just a mockup for demonstration purposes."
-          // message="Your data has been successfully posted to the database."
+          title={dialogTitle}
+          message={dialogMessage}
           onClose={() => setShowDialog(false)}
         />
       )}

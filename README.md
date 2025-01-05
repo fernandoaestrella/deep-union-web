@@ -17,7 +17,7 @@ relatedTemplates:
 
 # Web-powered multi-need matching
 
-a web tool to give and receive help in a structured manner
+a web tool to request and offer help from nearby strangers in a structured manner
 
 Using a mobile device internet connection, users can describe the needs they have (out of a defined set of needs like survival needs, companionship, etc), the needs they can supply for someone else, and how they look so a stranger in a crowd can identify them quickly (think questions like in the Guess Who game: “are you wearing glasses?”, “do you have facial hair?”, etc). Most options are binary so very little data is transmitted. Upon receipt, the software categorizes all received data according to the amount of matches between supplies and demands with the user, and shows how each person looks, so a user can find that other person in a crowd. 
 
