@@ -28,7 +28,8 @@ interface UserData {
 }
 
 interface MapViewProps {
-  userCoordinates: string; // Changed to string
+  userCoordinates: string;
+  userData: UserData | null; // Add this line
 }
 
 const CenterMapButton: React.FC<{ center: [number, number] }> = ({ center }) => {
@@ -43,10 +44,23 @@ const CenterMapButton: React.FC<{ center: [number, number] }> = ({ center }) => 
   );
 };
 
-const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
+const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
   const [nearbyUsers, setNearbyUsers] = useState<Array<{ id: string; coordinates: [number, number]; userData: UserData }>>([]);
   const [selectedUser, setSelectedUser] = useState<{ id: string; userData: UserData } | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([0, 0]);
+
+  const calculateMatches = (currentUser: UserData | null, selectedUser: UserData): number => {
+    if (!currentUser) return 0;
+    let matches = 0;
+    const needs = [ 'Preservation', 'Gratification', 'Definition', 'Acceptance', 'Expression', 'Reflection', 'Knowledge'];
+
+    needs.forEach(need => {
+      if (currentUser.requests[need] && selectedUser.offers[need]) matches++;
+      if (currentUser.offers[need] && selectedUser.requests[need]) matches++;
+    });
+
+    return matches;
+  };
 
   // Function to convert coordinates string to [number, number]
   const convertCoordinates = (coords: string): [number, number] => {
@@ -123,6 +137,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
   return (
     <div className="mt-8">
       <h4 className="mb-4 text-xl font-semibold">See a map to find users near you</h4>
+      <h5>Click on markers to see their user data below</h5>
       <div style={{ height: '400px', width: '100%' }}>
         <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
           <TileLayer
@@ -143,14 +158,31 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates }) => {
           ))}
         </MapContainer>
       </div>
-      {selectedUser && (
+      {selectedUser && userData && (
         <div className="mt-4 rounded bg-gray-100 p-4">
+          <div className="mb-4">
+            <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
+            <p className="text-xl font-bold">
+              Matches: {calculateMatches(userData, selectedUser.userData)} / 14
+            </p>
+          </div>
           <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
           <pre className="max-h-60 overflow-auto rounded bg-white p-3">
             {JSON.stringify(selectedUser.userData, null, 2)}
           </pre>
         </div>
       )}
+      {selectedUser && !userData && (
+        <div className="mt-4 rounded bg-gray-100 p-4">
+          <p className="text-xl font-bold">Current user data not available</p>
+          <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
+          <pre className="max-h-60 overflow-auto rounded bg-white p-3">
+            {JSON.stringify(selectedUser.userData, null, 2)}
+          </pre>
+        </div>
+      )}
+
+
     </div>
   );
 };
