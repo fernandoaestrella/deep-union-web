@@ -14,6 +14,14 @@ relatedTemplates:
   - postgres-sveltekit
 ---
 
+TO DO:
+- compare selected user with this user's selection
+- delete records
+- fix other user markers
+- color markers based on the number of matches with this user
+- shift zoom buttons down in the map view or the Center button to the right
+- translate
+- about page
 
 # Web-powered multi-need matching
 

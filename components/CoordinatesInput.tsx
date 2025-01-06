@@ -37,7 +37,7 @@ const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
       <p className="mb-4 text-sm text-gray-600">
         Examples of valid coordinates:<br />
         <b>Decimal:</b> 10.9780, 76.7353<br />
-        <b>DMS:</b> 19°27&apos;20.4&quot;N 70°39&apos;08.6&quot;W
+        <b>DMS:</b> 10°58&apos;40&quot;N 76°44&apos;07&quot;E
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
