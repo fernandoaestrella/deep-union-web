@@ -174,7 +174,12 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       )}
       {selectedUser && !userData && (
         <div className="mt-4 rounded bg-gray-100 p-4">
-          <p className="text-xl font-bold">Current user data not available</p>
+          <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
+          <p className="">Submit your user data to see a comparison with the selected user here</p>
+          <p className="text-xl font-bold">
+              Matches: 0 / 14
+            </p>
+          <br />
           <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
           <pre className="max-h-60 overflow-auto rounded bg-white p-3">
             {JSON.stringify(selectedUser.userData, null, 2)}
