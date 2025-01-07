@@ -27,6 +27,12 @@ interface UserData {
   };
 }
 
+interface User {
+  id: string;
+  coordinates: string;
+  userData: UserData; // Replace 'any' with a more specific type if possible
+}
+
 interface MapViewProps {
   userCoordinates: string;
   userData: UserData | null; // Add this line
@@ -61,7 +67,6 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
 
     return matches;
   };
-
   // Function to convert coordinates string to [number, number]
   const convertCoordinates = (coords: string): [number, number] => {
     // Detect if coordinates are in DMS format or decimal
@@ -106,12 +111,12 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
           throw new Error('Failed to fetch nearby users');
         }
 
-        const data = await response.json();
+        const data: User[] = await response.json();
         console.log('Fetched users:', data);
 
         // Assuming the API returns an array of users with the correct structure
         // You might need to transform the data if the structure is different
-        setNearbyUsers(data.map(user => ({
+        setNearbyUsers(data.map((user: User) => ({
           id: user.id,
           coordinates: convertCoordinates(user.coordinates),
           userData: user.userData
