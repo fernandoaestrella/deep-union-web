@@ -59,7 +59,7 @@ export default function Home() {
             <li>Be clear about your deeper desires instead of being pushed around by expectations.</li>
             <li>Receive help from someone you may not have considered that could enrich your life.</li>
             <li>See your life in many more dimensions than just survival and pleasure.</li>
-            <li>Fulfill different needs than the ones you have already covered (i.e. don't continuously fulfill the same one/s).</li>
+            <li>Fulfill different needs than the ones you have already covered (i.e. don&apos;t continuously fulfill the same one/s).</li>
             <li>Blur the lines between giving and receiving help, which may help discover a deeper reality than the apparent separation we experience. In other words, be open to what you might receive when you feel you are giving, and open yourself to noticing the flavor your life takes when you feel grateful for the help you receive.</li>
           </ul>
           <p className="mt-4">Enjoy!</p>
