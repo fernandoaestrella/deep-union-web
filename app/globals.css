@@ -9,6 +9,18 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+.marker-icon {
+  fill: #ff9800;  /* Default color (orange) */
+}
+
+.marker-icon.yellow {
+  fill: #ffd600;  /* Yellow for 5-9 matches */
+}
+
+.marker-icon.green {
+  fill: #4caf50;  /* Green for 10+ matches */
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(

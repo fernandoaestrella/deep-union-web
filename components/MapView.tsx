@@ -4,13 +4,17 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import prisma from '@/lib/prisma'
 
-// Fix for default marker icon
-// delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png').default,
-  iconUrl: require('leaflet/dist/images/marker-icon.png').default,
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png').default,
+// Add this new custom icon setup
+const customIcon = new L.Icon({
+  iconUrl: '/images/marker.svg',
+  iconRetinaUrl: '/images/marker.svg',
+  shadowUrl: '/images/marker-shadow.svg',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
+
 
 interface UserData {
   requests: Record<string, boolean>;
@@ -95,7 +99,24 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
     }
   };
 
+  const getMarkerColor = (matches: number): string => {
+    if (matches >= 10) return 'green';
+    if (matches >= 5) return 'yellow';
+    return ''; // Default orange
+  };
 
+  const createCustomIcon = (color: string) => {
+    return L.divIcon({
+      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="marker-icon ${color}" width="25" height="41">
+               <path d="M12 0c-4.4 0-8 3.6-8 8 0 5.4 8 13 8 13s8-7.6 8-13c0-4.4-3.6-8-8-8zm0 11c-1.6 0-3-1.4-3-3s1.4-3 3-3 3 1.4 3 3-1.4 3-3 3z"/>
+             </svg>`,
+      className: '',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+  };
+  
   // Fetch nearby users
   useEffect(() => {
     const fetchNearbyUsers = async () => {
@@ -150,17 +171,23 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           <CenterMapButton center={mapCenter} />
-          {nearbyUsers.map((user) => (
-            <Marker
-              key={user.id}
-              position={user.coordinates}
-              eventHandlers={{
-                click: () => setSelectedUser({ id: user.id, userData: user.userData }),
-              }}
-            >
-              <Popup>User {user.id}</Popup>
-            </Marker>
-          ))}
+          {nearbyUsers.map((user) => {
+            const matches = calculateMatches(userData, user.userData);
+            const markerColor = getMarkerColor(matches);
+            return (
+              <Marker
+                key={user.id}
+                position={user.coordinates}
+                icon={createCustomIcon(markerColor)}
+                eventHandlers={{
+                  click: () => setSelectedUser({ id: user.id, userData: user.userData }),
+                }}
+              >
+                <Popup>User {user.id} (Matches: {matches} out of 14)</Popup>
+              </Marker>
+            );
+          })}
+
         </MapContainer>
       </div>
       {selectedUser && userData && (

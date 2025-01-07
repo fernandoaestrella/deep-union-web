@@ -16,10 +16,10 @@ relatedTemplates:
 
 TO DO:
 - compare selected user with this user's selection
-- delete records
-- fix other user markers
-- color markers based on the number of matches with this user
+	- colorize user data comparison based on amount of matches
+- visually describe users
 - shift zoom buttons down in the map view or the Center button to the right
+- delete records
 - translate
 - about page
 
