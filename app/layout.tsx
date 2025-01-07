@@ -22,6 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.variable}>
+        <header className="bg-slate-800 px-6 py-4 text-white">
+          <h1 className="text-2xl font-bold">deep union web</h1>
+          <p className="mt-2 text-sm">a web tool to request and offer help from nearby strangers in a structured manner</p>
+        </header>
         {children}
         <footer>
           <div className='text-center'>

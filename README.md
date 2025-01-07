@@ -15,8 +15,8 @@ relatedTemplates:
 ---
 
 TO DO:
+- add more description to needs
 - delete records
-- about page
 - translate
 
 # Web-powered multi-need matching

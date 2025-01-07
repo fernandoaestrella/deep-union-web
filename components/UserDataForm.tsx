@@ -25,7 +25,8 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
     const [dialogMessage, setDialogMessage] = useState('');
     const [upperColorWarning, setUpperColorWarning] = useState(false);
     const [lowerColorWarning, setLowerColorWarning] = useState(false);
-  
+    const [visibleExplanations, setVisibleExplanations] = useState<Record<string, boolean>>({});
+    
     const categories = [
     'Preservation',
     'Gratification',
@@ -58,20 +59,82 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
 
   const renderCheckboxes = (section: 'requests' | 'offers') => (
     <div className="space-y-2">
-      {categories.map(category => (
-        <label key={`${section}-${category}`} className="flex items-center space-x-2 rounded bg-sky-100 p-2">
-          <input
-            type="checkbox"
-            name={`${section}-${category}`}
-            checked={formDataStructure[section][category]}
-            onChange={(e) => handleCategoryChange(section, category, e.target.checked)}
-            className="mr-2"
-          />
-          <span>{category}</span>
-        </label>
-      ))}
+      {categories.map(category => {
+        const key = `${section}-${category}`;
+        return (
+          <div key={key} className="space-y-1">
+            <div className="flex items-center space-x-2">
+              <label className="flex flex-grow items-center space-x-2 rounded bg-sky-100 p-2">
+                <input
+                  type="checkbox"
+                  name={key}
+                  checked={formDataStructure[section][category]}
+                  onChange={(e) => handleCategoryChange(section, category, e.target.checked)}
+                  className="mr-2"
+                />
+                <span>{category}</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => toggleExplanation(key)}
+                className="ml-2 text-gray-600 hover:text-gray-800"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            {visibleExplanations[key] && (
+              <div className="relative mt-1 rounded bg-white p-3 text-sm shadow">
+                <button
+                  onClick={() => toggleExplanation(key)}
+                  className="absolute right-1 top-1 text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                {getExplanation(section, category)}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
+
+
+  const toggleExplanation = (key: string) => {
+    setVisibleExplanations(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const getExplanation = (section: 'requests' | 'offers', category: string): string => {
+    const explanations: Record<string, Record<string, string>> = {
+      requests: {
+        Preservation: "e.g. ask for something needed for your survival",
+        Gratification: "e.g. ask someone to join you in a game",
+        Definition: "e.g. ask for help in a great project",
+        Acceptance: "e.g. face your fears",
+        Expression: "e.g. say what has been hard to say",
+        Reflection: "e.g. find clarity and truth about how you limit yourself without your awareness",
+        Knowledge: "e.g. let your identity be universal"
+      },
+      offers: {
+        Preservation: "e.g. provide for someone's survival",
+        Gratification: "e.g. join someone's game",
+        Definition: "e.g. help someone succeed in a great project",
+        Acceptance: "e.g. help someone grow by facing their fears",
+        Expression: "e.g. listen to someone and try to uncover what they are really trying to say but can't",
+        Reflection: "e.g. find ways in which others are limiting themselves and humbly suggest playful ways to notice and break those limitations",
+        Knowledge: "e.g. let your identity be universal"
+      }
+    };
+
+    return explanations[section][category] || "No explanation available";
+  };
 
   const handleCategoryChange = (section: 'requests' | 'offers', category: string, checked: boolean) => {
     setFormDataStructure(prevState => ({

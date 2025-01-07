@@ -181,7 +181,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
   return (
     <div className="mt-8">
       <h4 className="mb-4 text-xl font-semibold">See a map to find users near you</h4>
-      <h5>Click on markers to see their user data below.</h5>
+      <h5>Click on markers to see their user data below. You can zoom in or out, and you can drag the map to view another area</h5>
       <br />
       <h5 className="text-sm">Marker Color Legend:</h5>
       <ul className="list-disc pl-4 text-xs">
@@ -189,7 +189,8 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
         <li className="mb-1 text-yellow-400">Yellow: 9 to 5 matches</li>
         <li className="mb-1 text-orange-500">Orange: 4 or less matches</li>
       </ul>
-      
+      <h5 className="text-sm">Submit your user data for map markers to reflect this compatibility</h5>
+
       <br />
 
       <div style={{ height: '400px', width: '100%' }}>
