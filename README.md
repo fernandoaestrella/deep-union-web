@@ -15,7 +15,6 @@ relatedTemplates:
 ---
 
 TO DO:
-- shift zoom buttons down in the map view or the Center button to the right
 - delete records
 - about page
 - translate

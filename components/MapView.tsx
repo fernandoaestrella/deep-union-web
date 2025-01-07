@@ -234,59 +234,40 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
 
           <br />
 
-          <h5 className="mb-2 text-lg font-medium">Selected User&apos;s Visual Description</h5>
-          <div className="flex flex-wrap gap-2">
-            <img 
-              src={`/images/user-visual-description/${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`} 
-              alt="Gender" 
-              className="h-10 w-10"
-            />
-            <img 
-              src={`/images/user-visual-description/${selectedUser.userData.description.isTaller ? 'tall' : 'small'}.png`} 
-              alt="Height" 
-              className="h-10 w-10"
-            />
-            <img 
-              src={`/images/user-visual-description/${selectedUser.userData.description.isOlder ? 'old' : 'young'}.png`} 
-              alt="Age" 
-              className="h-10 w-10"
-            />
-            {/* shows the facial hair image if the selected user is male or the hair length image if it is female */}
-            {selectedUser.userData.description.isMale ? 
-              <div>
-                <img 
-                src={`/images/user-visual-description/${selectedUser.userData.description.hasFacialHair ? 'male_bearded' : 'male_shaved'}.png`} 
-                alt="Facial Hair" 
-                className="h-10 w-10"
-                />
-              </div>
-            : 
-            <img 
-              src={`/images/user-visual-description/${selectedUser.userData.description.hasLongHair ? 'long_hair' : 'short_hair'}.png`} 
-              alt="Hair Length" 
-              className="h-10 w-10"
-            />
-            }
-            
-            <img 
-              src={`/images/user-visual-description/${selectedUser.userData.description.wearsGlasses ? 'glasses' : 'no_glasses'}.png`} 
-              alt="Glasses" 
-              className="h-10 w-10"
-            />
-            <img 
-              src={`/images/user-visual-description/top_${selectedUser.userData.description.upperColor.toLowerCase()}.png`} 
-              alt="Upper Color" 
-              className="h-10 w-10"
-            />
-            <img 
-              src={`/images/user-visual-description/bottom_${selectedUser.userData.description.lowerColor.toLowerCase()}.png`} 
-              alt="Lower Color" 
-              className="h-10 w-10"
-            />
-          </div>
+    <h5 className="mb-2 text-lg font-medium">Selected User's Visual Description</h5>
+    <div className="flex flex-wrap gap-2">
+      {[
+        { src: `${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`, alt: "Gender", title: selectedUser.userData.description.isMale ? "Male" : "Female" },
+        { src: `${selectedUser.userData.description.isTaller ? 'tall' : 'small'}.png`, alt: "Height", title: selectedUser.userData.description.isTaller ? "Taller" : "Shorter" },
+        { src: `${selectedUser.userData.description.isOlder ? 'old' : 'young'}.png`, alt: "Age", title: selectedUser.userData.description.isOlder ? "Older" : "Younger" },
+        ...(selectedUser.userData.description.isMale 
+          ? [{ src: `${selectedUser.userData.description.hasFacialHair ? 'male_bearded' : 'male_shaved'}.png`, alt: "Facial Hair", title: selectedUser.userData.description.hasFacialHair ? "Has Facial Hair" : "No Facial Hair" }]
+          : [{ src: `${selectedUser.userData.description.hasLongHair ? 'long_hair' : 'short_hair'}.png`, alt: "Hair Length", title: selectedUser.userData.description.hasLongHair ? "Long Hair" : "Short Hair" }]
+        ),
+        { src: `${selectedUser.userData.description.wearsGlasses ? 'glasses' : 'no_glasses'}.png`, alt: "Glasses", title: selectedUser.userData.description.wearsGlasses ? "Wears Glasses" : "No Glasses" },
+        { src: `top_${selectedUser.userData.description.upperColor.toLowerCase()}.png`, alt: "Upper Clothing Color", title: `Upper Clothing Color: ${selectedUser.userData.description.upperColor}` },
+        { src: `bottom_${selectedUser.userData.description.lowerColor.toLowerCase()}.png`, alt: "Lower Clothing Color", title: `Lower Clothing Color: ${selectedUser.userData.description.lowerColor}` },
+      ].map((image, index) => (
+        <div key={index} className="relative">
+          <img 
+            src={`/images/user-visual-description/${image.src}`} 
+            alt={image.alt} 
+            className="h-10 w-10 cursor-pointer"
+            onClick={() => {
+              console.log(`Clicked on image ${image.alt}`);
+              const titleElement = document.getElementById('imageTitleDisplay');
+              if (titleElement) {
+                titleElement.textContent = image.title;
+                titleElement.style.display = 'block';
+              }
+            }}
+          />
+        </div>
+      ))}
+    </div>
+    <div id="imageTitleDisplay" className="mt-2 rounded bg-gray-200 p-2 text-center"></div>
 
           <br />
-
 
           <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
           <pre className="max-h-60 overflow-auto rounded bg-white p-3">
