@@ -234,7 +234,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
 
           <br />
 
-          <h5 className="mb-2 text-lg font-medium">Selected User's Visual Description</h5>
+          <h5 className="mb-2 text-lg font-medium">Selected User&apos;s Visual Description</h5>
           <div className="flex flex-wrap gap-2">
             <img 
               src={`/images/user-visual-description/${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`} 
