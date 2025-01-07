@@ -71,6 +71,24 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
 
     return matches;
   };
+
+  const generateCompatibilityDescription = (currentUser: UserData | null, selectedUser: UserData): string => {
+    if (!currentUser) return "Please submit your user data to see compatibility details.";
+
+    const needs = ['Preservation', 'Gratification', 'Definition', 'Acceptance', 'Expression', 'Reflection', 'Knowledge'];
+    let description = "";
+
+    needs.forEach(need => {
+      if (currentUser.offers[need] && selectedUser.requests[need]) {
+        description += `• You can offer ${need} to the selected user!\n`;
+      }
+      if (currentUser.requests[need] && selectedUser.offers[need]) {
+        description += `• You can request ${need} from the selected user!\n`;
+      }
+    });
+
+    return description.trim() || "No direct matches found.";
+  };
   // Function to convert coordinates string to [number, number]
   const convertCoordinates = (coords: string): [number, number] => {
     // Detect if coordinates are in DMS format or decimal
@@ -116,7 +134,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       popupAnchor: [1, -34]
     });
   };
-  
+
   // Fetch nearby users
   useEffect(() => {
     const fetchNearbyUsers = async () => {
@@ -163,7 +181,17 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
   return (
     <div className="mt-8">
       <h4 className="mb-4 text-xl font-semibold">See a map to find users near you</h4>
-      <h5>Click on markers to see their user data below</h5>
+      <h5>Click on markers to see their user data below.</h5>
+      <br />
+      <h5 className="text-sm">Marker Color Legend:</h5>
+      <ul className="list-disc pl-4 text-xs">
+        <li className="mb-1 text-green-600">Green: 10 or more matches</li>
+        <li className="mb-1 text-yellow-400">Yellow: 9 to 5 matches</li>
+        <li className="mb-1 text-orange-500">Orange: 4 or less matches</li>
+      </ul>
+      
+      <br />
+
       <div style={{ height: '400px', width: '100%' }}>
         <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
           <TileLayer
@@ -198,25 +226,44 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
               Matches: {calculateMatches(userData, selectedUser.userData)} / 14
             </p>
           </div>
+          <h5 className="mb-2 text-lg font-medium">Compatibility Description</h5>
+          <pre className="whitespace-pre-wrap rounded bg-white p-3">
+            {generateCompatibilityDescription(userData, selectedUser.userData)}
+          </pre>
+
           <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
           <pre className="max-h-60 overflow-auto rounded bg-white p-3">
             {JSON.stringify(selectedUser.userData, null, 2)}
           </pre>
         </div>
       )}
+
       {selectedUser && !userData && (
         <div className="mt-4 rounded bg-gray-100 p-4">
-          <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
-          <p className="">Submit your user data to see a comparison with the selected user here</p>
-          <p className="text-xl font-bold">
-              Matches: 0 / 14
-            </p>
+          <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
+            <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Submit your user data to see a comparison with the selected user below
+          </p>
           <br />
           <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
           <pre className="max-h-60 overflow-auto rounded bg-white p-3">
             {JSON.stringify(selectedUser.userData, null, 2)}
           </pre>
         </div>
+      )}
+
+      <br />
+
+      {/* If no selected user and no userData submitted */}
+      {!selectedUser &&!userData && (
+        <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
+        <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        Please select a user in the map above by clicking on their marker to see your compatibility with them here
+      </p>
       )}
 
 
