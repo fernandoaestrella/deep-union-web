@@ -220,16 +220,73 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       </div>
       {selectedUser && userData && (
         <div className="mt-4 rounded bg-gray-100 p-4">
-          <div className="mb-4">
-            <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
-            <p className="text-xl font-bold">
-              Matches: {calculateMatches(userData, selectedUser.userData)} / 14
-            </p>
-          </div>
+          <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
+          <p className="text-xl">
+            Matches: {calculateMatches(userData, selectedUser.userData)} / 14
+          </p>
+
+          <br />
+          
           <h5 className="mb-2 text-lg font-medium">Compatibility Description</h5>
           <pre className="whitespace-pre-wrap rounded bg-white p-3">
             {generateCompatibilityDescription(userData, selectedUser.userData)}
           </pre>
+
+          <br />
+
+          <h5 className="mb-2 text-lg font-medium">Selected User's Visual Description</h5>
+          <div className="flex flex-wrap gap-2">
+            <img 
+              src={`/images/user-visual-description/${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`} 
+              alt="Gender" 
+              className="h-10 w-10"
+            />
+            <img 
+              src={`/images/user-visual-description/${selectedUser.userData.description.isTaller ? 'tall' : 'small'}.png`} 
+              alt="Height" 
+              className="h-10 w-10"
+            />
+            <img 
+              src={`/images/user-visual-description/${selectedUser.userData.description.isOlder ? 'old' : 'young'}.png`} 
+              alt="Age" 
+              className="h-10 w-10"
+            />
+            {/* shows the facial hair image if the selected user is male or the hair length image if it is female */}
+            {selectedUser.userData.description.isMale ? 
+              <div>
+                <img 
+                src={`/images/user-visual-description/${selectedUser.userData.description.hasFacialHair ? 'male_bearded' : 'male_shaved'}.png`} 
+                alt="Facial Hair" 
+                className="h-10 w-10"
+                />
+              </div>
+            : 
+            <img 
+              src={`/images/user-visual-description/${selectedUser.userData.description.hasLongHair ? 'long_hair' : 'short_hair'}.png`} 
+              alt="Hair Length" 
+              className="h-10 w-10"
+            />
+            }
+            
+            <img 
+              src={`/images/user-visual-description/${selectedUser.userData.description.wearsGlasses ? 'glasses' : 'no_glasses'}.png`} 
+              alt="Glasses" 
+              className="h-10 w-10"
+            />
+            <img 
+              src={`/images/user-visual-description/top_${selectedUser.userData.description.upperColor.toLowerCase()}.png`} 
+              alt="Upper Color" 
+              className="h-10 w-10"
+            />
+            <img 
+              src={`/images/user-visual-description/bottom_${selectedUser.userData.description.lowerColor.toLowerCase()}.png`} 
+              alt="Lower Color" 
+              className="h-10 w-10"
+            />
+          </div>
+
+          <br />
+
 
           <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
           <pre className="max-h-60 overflow-auto rounded bg-white p-3">

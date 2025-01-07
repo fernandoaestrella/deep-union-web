@@ -15,14 +15,11 @@ relatedTemplates:
 ---
 
 TO DO:
-- compare selected user with this user's selection
-	- describe how do users match
-	- colorize user data comparison based on amount of matches
 - visually describe users
 - shift zoom buttons down in the map view or the Center button to the right
 - delete records
-- translate
 - about page
+- translate
 
 # Web-powered multi-need matching
 

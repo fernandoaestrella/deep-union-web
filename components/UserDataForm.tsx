@@ -22,7 +22,10 @@ interface UserDataFormProps {
 
 const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
     const [showDialog, setShowDialog] = useState(false);
-
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [upperColorWarning, setUpperColorWarning] = useState(false);
+    const [lowerColorWarning, setLowerColorWarning] = useState(false);
+  
     const categories = [
     'Preservation',
     'Gratification',
@@ -94,15 +97,34 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Collect and validate form data
+    // Validate color selections
+    if (!formDataStructure.description.upperColor || !formDataStructure.description.lowerColor) {
+      setShowDialog(true);
+      setDialogMessage('Please select both upper and lower body clothing colors.');
+      setUpperColorWarning(!formDataStructure.description.upperColor);
+      setLowerColorWarning(!formDataStructure.description.lowerColor);
+      return;
+    }
+
+    // If validation passes, proceed with form submission
     const formData: UserData = {
       requests: formDataStructure.requests,
       offers: formDataStructure.offers,
       description: formDataStructure.description,
     };
     onSubmit(formData);
-    setShowDialog(true); // Show the dialog after submitting
+    setShowDialog(true);
+    setDialogMessage('Your user data has been updated successfully.');
   };
+
+  const ColorWarning = ({ message }: { message: string }) => (
+    <p className="mb-2 flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
+      <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      {message}
+    </p>
+  );
 
 
   return (
@@ -176,9 +198,18 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
         </div>
 
         <div className="mt-4 space-y-2">
+          {upperColorWarning && <ColorWarning message="Please select an upper body clothing color." />}
           <label className="block">
             <span className="mb-1 block">Upper body clothing color:</span>
-            <select name="upperColor" value={formDataStructure.description.upperColor} onChange={handleChange} className="w-full rounded border p-2">
+            <select 
+              name="upperColor" 
+              value={formDataStructure.description.upperColor} 
+              onChange={(e) => {
+                handleChange(e);
+                setUpperColorWarning(false);
+              }} 
+              className="w-full rounded border p-2"
+            >
               <option value="">Select color</option>
               <option value="white">White</option>
               <option value="black">Black</option>
@@ -194,10 +225,20 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
             </select>
           </label>
         </div>
+
         <div className="mt-2 space-y-2">
+          {lowerColorWarning && <ColorWarning message="Please select a lower body clothing color." />}
           <label className="block">
             <span className="mb-1 block">Lower body clothing color:</span>
-            <select name="lowerColor" value={formDataStructure.description.lowerColor} onChange={handleChange} className="w-full rounded border p-2">
+            <select 
+              name="lowerColor" 
+              value={formDataStructure.description.lowerColor} 
+              onChange={(e) => {
+                handleChange(e);
+                setLowerColorWarning(false);
+              }} 
+              className="w-full rounded border p-2"
+            >
               <option value="">Select color</option>
               <option value="white">White</option>
               <option value="black">Black</option>
@@ -216,8 +257,8 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
 
       {showDialog && (
         <Dialog
-          title="Success"
-          message="Your user data has been updated successfully."
+          title={dialogMessage.includes('successfully') ? 'Success' : 'Error'}
+          message={dialogMessage}
           onClose={() => setShowDialog(false)}
         />
       )}
