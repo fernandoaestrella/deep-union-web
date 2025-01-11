@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L, { map } from 'leaflet';
 import prisma from '@/lib/prisma'
 import WarningIcon from './WarningIcon';
+import CollapsibleSection from './CollapsibleSection';
 
 // Add this new custom icon setup
 const customIcon = new L.Icon({
@@ -234,40 +235,19 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
       
       <br />
 
-      <div className="mt-4">
-        <button
-          className="flex w-full items-center justify-between rounded bg-gray-200 p-2 text-left text-sm font-medium hover:bg-gray-300 focus:outline-none"
-          onClick={() => setIsLegendOpen(!isLegendOpen)}
-        >
-          <span>Marker Color Legend</span>
-          <svg
-            className={`h-5 w-5 transform transition-transform duration-200 ${
-              isLegendOpen ? 'rotate-180' : ''
-            }`}
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-        {isLegendOpen && (
-          <div className="mt-2 rounded border border-gray-200 p-4">
-            <ul className="list-disc pl-4 text-xs">
-              <li className="mb-1 text-green-600">Green: 10 or more matches</li>
-              <li className="mb-1 text-yellow-400">Yellow: 9 to 5 matches</li>
-              <li className="mb-1 text-orange-500">Orange: 4 or less matches</li>
-            </ul>
-            <h5 className="mt-2 text-sm">Submit your user data for map markers to reflect this compatibility</h5>
-          </div>
-        )}
-      </div>
+      {/* Marker Color Legend */}
+      <CollapsibleSection title="Marker Color Legend">
+        <ul className="list-disc pl-4 text-xs">
+          <li className="mb-1 text-green-600">Green: 10 or more matches</li>
+          <li className="mb-1 text-yellow-400">Yellow: 9 to 5 matches</li>
+          <li className="mb-1 text-orange-500">Orange: 4 or less matches</li>
+        </ul>
+        <h5 className="mt-2 text-sm">Submit your user data for map markers to reflect this compatibility</h5>
+      </CollapsibleSection>
 
       <br />
 
+      {/* Map */}
       <div style={{ height: '400px', width: '100%' }}>
         <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
           <TileLayer
@@ -295,60 +275,61 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         </MapContainer>
       </div>
 
-      {/* Add a list of all the fetched users in order, from closest to farthest. One page of results for every 10 users. Each user should be a button that when clicked overrides the selected user selection and updates the map by selecting the selected user*/}
       {/* Nearby Users list */}
-      <div className="mt-8">
-        <h4 className="mb-4 text-xl font-semibold">Nearby Users</h4>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {currentUsers.map((user) => {
-            const [userLat, userLng] = mapCenter;
-            const distance = calculateDistance(userLat, userLng, user.coordinates[0], user.coordinates[1]);
-            const direction = getDirection(userLat, userLng, user.coordinates[0], user.coordinates[1]);
-            return (
-              <button
-                key={user.id}
-                className={`flex flex-col items-start rounded p-3 text-sm ${
-                  selectedUser?.id === user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
-                }`}
-                onClick={() => {
-                  setSelectedUser({ id: user.id, userData: user.userData });
-                  const mapElement = document.querySelector('.leaflet-container');
-                  if (mapElement) {
-                    const map = (mapElement as any)._leaflet_map;
-                    if (map) {
-                      map.setView(user.coordinates, 13);
+      <CollapsibleSection title='Nearby Users list'>
+        <div className="mt-8">
+          <h4 className="mb-4 text-xl font-semibold">Nearby Users</h4>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {currentUsers.map((user) => {
+              const [userLat, userLng] = mapCenter;
+              const distance = calculateDistance(userLat, userLng, user.coordinates[0], user.coordinates[1]);
+              const direction = getDirection(userLat, userLng, user.coordinates[0], user.coordinates[1]);
+              return (
+                <button
+                  key={user.id}
+                  className={`flex flex-col items-start rounded p-3 text-sm ${
+                    selectedUser?.id === user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
+                  }`}
+                  onClick={() => {
+                    setSelectedUser({ id: user.id, userData: user.userData });
+                    const mapElement = document.querySelector('.leaflet-container');
+                    if (mapElement) {
+                      const map = (mapElement as any)._leaflet_map;
+                      if (map) {
+                        map.setView(user.coordinates, 13);
+                      }
                     }
-                  }
-                }}
+                  }}
+                >
+                  <div className="font-semibold">User {user.id.slice(0, 8)}...</div>
+                  <div>Matches: {calculateMatches(userData, user.userData)}</div>
+                  <div>{distance.toFixed(2)} km {direction}</div>
+                </button>
+              );
+            })}
+          </div>
+
+
+          {/* Pagination */}
+          <div className="mt-4 flex justify-center">
+            Pages
+            {Array.from({ length: Math.min(Math.ceil(sortedUsers.length / usersPerPage), maxPages) }, (_, i) => (
+              <button
+                key={i}
+                className={`mx-1 rounded px-3 py-1 ${
+                  currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
+                }`}
+                onClick={() => paginate(i + 1)}
               >
-                <div className="font-semibold">User {user.id.slice(0, 8)}...</div>
-                <div>Matches: {calculateMatches(userData, user.userData)}</div>
-                <div>{distance.toFixed(2)} km {direction}</div>
+                {i + 1}
               </button>
-            );
-          })}
+            ))}
+            {Math.ceil(sortedUsers.length / usersPerPage) > maxPages && (
+              <span className="ml-2 text-gray-600">...</span>
+            )}
+          </div>
         </div>
-
-
-        {/* Pagination */}
-        <div className="mt-4 flex justify-center">
-          Pages
-          {Array.from({ length: Math.min(Math.ceil(sortedUsers.length / usersPerPage), maxPages) }, (_, i) => (
-            <button
-              key={i}
-              className={`mx-1 rounded px-3 py-1 ${
-                currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
-              }`}
-              onClick={() => paginate(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
-          {Math.ceil(sortedUsers.length / usersPerPage) > maxPages && (
-            <span className="ml-2 text-gray-600">...</span>
-          )}
-        </div>
-      </div>
+      </CollapsibleSection>
 
       {selectedUser && userData && (
         <div className="mt-4 rounded p-4">
@@ -366,30 +347,47 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
 
           <br />
 
-    <h5 className="mb-2 text-lg font-medium">Selected User&apos;s Visual Description</h5>
-    <div className="flex flex-wrap gap-2">
-      {[
-        { src: `${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`, alt: "Gender", title: selectedUser.userData.description.isMale ? "Male" : "Female" },
-        { src: `${selectedUser.userData.description.isTaller ? 'tall' : 'small'}.png`, alt: "Height", title: selectedUser.userData.description.isTaller ? "Taller" : "Shorter" },
-        { src: `${selectedUser.userData.description.isOlder ? 'old' : 'young'}.png`, alt: "Age", title: selectedUser.userData.description.isOlder ? "Older" : "Younger" },
-        ...(selectedUser.userData.description.isMale 
-          ? [{ src: `${selectedUser.userData.description.hasFacialHair ? 'male_bearded' : 'male_shaved'}.png`, alt: "Facial Hair", title: selectedUser.userData.description.hasFacialHair ? "Has Facial Hair" : "No Facial Hair" }]
-          : [{ src: `${selectedUser.userData.description.hasLongHair ? 'long_hair' : 'short_hair'}.png`, alt: "Hair Length", title: selectedUser.userData.description.hasLongHair ? "Long Hair" : "Short Hair" }]
-        ),
-        { src: `${selectedUser.userData.description.wearsGlasses ? 'glasses' : 'no_glasses'}.png`, alt: "Glasses", title: selectedUser.userData.description.wearsGlasses ? "Wears Glasses" : "No Glasses" },
-        { src: `top_${selectedUser.userData.description.upperColor.toLowerCase()}.png`, alt: "Upper Clothing Color", title: `Upper Clothing Color: ${selectedUser.userData.description.upperColor}` },
-        { src: `bottom_${selectedUser.userData.description.lowerColor.toLowerCase()}.png`, alt: "Lower Clothing Color", title: `Lower Clothing Color: ${selectedUser.userData.description.lowerColor}` },
-      ].map((image, index) => (
-        <div key={index} className="relative">
-          <img 
-            src={`/images/user-visual-description/${image.src}`} 
-            alt={image.alt} 
-            title={image.title}
-            className="h-10 w-10"
-          />
-        </div>
-      ))}
-    </div>
+          <h5 className="mb-2 text-lg font-medium">Selected User&apos;s Visual Description</h5>
+          
+          <div className="flex flex-wrap gap-2">
+            {[
+              { src: `${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`, alt: "Gender", title: selectedUser.userData.description.isMale ? "Male" : "Female" },
+              { src: `${selectedUser.userData.description.isTaller ? 'tall' : 'small'}.png`, alt: "Height", title: selectedUser.userData.description.isTaller ? "Taller" : "Shorter" },
+              { src: `${selectedUser.userData.description.isOlder ? 'old' : 'young'}.png`, alt: "Age", title: selectedUser.userData.description.isOlder ? "Older" : "Younger" },
+              ...(selectedUser.userData.description.isMale 
+                ? [{ src: `${selectedUser.userData.description.hasFacialHair ? 'male_bearded' : 'male_shaved'}.png`, alt: "Facial Hair", title: selectedUser.userData.description.hasFacialHair ? "Has Facial Hair" : "No Facial Hair" }]
+                : [{ src: `${selectedUser.userData.description.hasLongHair ? 'long_hair' : 'short_hair'}.png`, alt: "Hair Length", title: selectedUser.userData.description.hasLongHair ? "Long Hair" : "Short Hair" }]
+              ),
+              { src: `${selectedUser.userData.description.wearsGlasses ? 'glasses' : 'no_glasses'}.png`, alt: "Glasses", title: selectedUser.userData.description.wearsGlasses ? "Wears Glasses" : "No Glasses" },
+              { src: `top_${selectedUser.userData.description.upperColor.toLowerCase()}.png`, alt: "Upper Clothing Color", title: `Upper Clothing Color: ${selectedUser.userData.description.upperColor}` },
+              { src: `bottom_${selectedUser.userData.description.lowerColor.toLowerCase()}.png`, alt: "Lower Clothing Color", title: `Lower Clothing Color: ${selectedUser.userData.description.lowerColor}` },
+            ].map((image, index) => (
+              <div key={index} className="relative">
+                <img 
+                  src={`/images/user-visual-description/${image.src}`} 
+                  alt={image.alt} 
+                  title={image.title}
+                  className="h-10 w-10 cursor-pointer"
+                  onClick={() => {
+                    const descriptionElement = document.getElementById('iconDescription');
+                    if (descriptionElement) {
+                      descriptionElement.textContent = image.title;
+                    }
+                  }}
+                  onMouseEnter={() => {
+                    const descriptionElement = document.getElementById('iconDescription');
+                    if (descriptionElement) {
+                      descriptionElement.textContent = image.title;
+                    }
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          <p className="mb-2 text-sm text-gray-600">Tap an icon to see what it means below</p>
+          <div className="mb-2 h-8 text-sm italic text-gray-700" id="iconDescription">
+            Icon description will be here
+          </div>
 
           <br />
 

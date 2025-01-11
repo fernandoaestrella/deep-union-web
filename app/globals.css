@@ -23,6 +23,10 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+}
+
+.gradient-background {
   background: linear-gradient(
       to bottom,
       transparent,
@@ -30,3 +34,4 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
