@@ -280,6 +280,8 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         <div className="mt-8">
           <h4 className="mb-4 text-xl font-semibold">Nearby Users</h4>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {/* if no users have posted data, notify this */}
+            {currentUsers.length === 0 && <p>No users have posted data yet.</p>}
             {currentUsers.map((user) => {
               const [userLat, userLng] = mapCenter;
               const distance = calculateDistance(userLat, userLng, user.coordinates[0], user.coordinates[1]);
