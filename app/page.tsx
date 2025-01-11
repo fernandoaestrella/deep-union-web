@@ -28,30 +28,31 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <section className="mb-8 w-full max-w-2xl">
+    <main className="flex min-h-screen flex-col items-center justify-between p-12">
+      <section className="mb-8 w-full max-w-4xl lg:max-w-2xl">
         <h2 className="mb-4 text-2xl font-semibold">1. User Data</h2>
         <UserDataForm onSubmit={handleUserDataSubmit} />
       </section>
 
-      <section className="mb-8 w-full max-w-2xl">
+      <section className="mb-8 w-full max-w-4xl lg:max-w-2xl">
         <h2 className="mb-4 text-2xl font-semibold">2. Coordinates</h2>
         <CoordinatesInput onSubmit={handleCoordinatesSubmit} />
       </section>
 
-      <section className="mb-8 w-full max-w-2xl">
+      <section className="mb-8 w-full max-w-4xl lg:max-w-2xl">
         <h2 className="mb-4 text-2xl font-semibold">3. Post</h2>
         <PostData userData={userData} coordinates={coordinates} />
       </section>
 
-      <section className="mb-8 w-full max-w-2xl">
+      <section className="mb-8 w-full max-w-4xl lg:max-w-2xl">
         <h2 className="mb-4 text-2xl font-semibold">4. Map</h2>
         {isClient && <MapView userData={userData} userCoordinates={coordinates} />}
       </section>
 
-      <section className="mb-8 w-full max-w-2xl">
+      <section className="mb-8 w-full max-w-4xl lg:max-w-2xl">
         <h2 className="mb-4 p-6 text-2xl font-semibold">5. About this app</h2>
         <div className='rounded bg-white p-8 shadow'>
+
           <p>
             We hope this app reminds you of the magic that is already out there in the world. As you use it, we invite you to allow yourself to:
           </p>

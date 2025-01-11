@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import prisma from '@/lib/prisma'
+import WarningIcon from './WarningIcon';
 
 // Add this new custom icon setup
 const customIcon = new L.Icon({
@@ -377,9 +378,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       {selectedUser && !userData && (
         <div className="mt-4 rounded bg-gray-100 p-4">
           <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
-            <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+            <WarningIcon />
             Submit your user data to see a comparison with the selected user below
           </p>
           <br />
@@ -395,9 +394,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       {/* If no selected user and no userData submitted */}
       {!selectedUser &&!userData && (
         <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
-        <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
+        <WarningIcon />
         Please select a user in the map above by clicking on their marker to see your compatibility with them here
       </p>
       )}
