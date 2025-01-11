@@ -331,6 +331,16 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         </div>
       </CollapsibleSection>
 
+      {/* If no selected user */}
+      {!selectedUser && (
+        <div className="mt-4">
+          <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
+            <WarningIcon />
+            Please select a user to see your compatibility with them here
+          </p>
+        </div>
+      )}
+
       {selectedUser && userData && (
         <div className="mt-4 rounded p-4">
           <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
@@ -412,15 +422,9 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         </div>
       )}
 
+    
       <br />
 
-      {/* If no selected user and no userData submitted */}
-      {!selectedUser &&!userData && (
-        <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
-        <WarningIcon />
-        Please select a user to see your compatibility with them here
-      </p>
-      )}
 
 
     </div>
