@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import SubmitButton from './SubmitButton';
+import Dialog from './Dialog';
 
 interface CoordinatesInputProps {
   onSubmit: (coordinates: string) => void;
@@ -32,7 +34,7 @@ const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="mx-auto mt-4 w-full max-w-md rounded bg-white p-6 shadow">
+    <div className="mx-auto mt-4 w-full rounded bg-white p-6 shadow">
       <h4 className="mb-2 text-lg font-semibold">Input your current coordinates</h4>
       <p className="mb-4 text-sm text-gray-600">
         Examples of valid coordinates:<br />
@@ -45,29 +47,21 @@ const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
             type="text"
             value={coordinates}
             onChange={(e) => setCoordinates(e.target.value)}
-            placeholder="Enter coordinates here"
+            placeholder="Enter your coordinates here"
             className="w-full rounded-md border px-3 py-2 text-gray-700 placeholder-gray-400 focus:border-blue-500 focus:outline-none"
           />
           {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
         </div>
-        <button
-          type="submit"
-          className="focus:shadow-outline w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600 focus:outline-none"
-        >
-          Submit Coordinates
-        </button>
+        <SubmitButton text="Submit Coordinates" />
       </form>
       {showConfirmation && (
-        <div className="mt-4 rounded-md bg-green-100 p-4 text-green-700">
-          <p>Valid coordinates received: {coordinates}</p>
-          <button 
-            onClick={() => setShowConfirmation(false)}
-            className="mt-2 rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600"
-          >
-            Close
-          </button>
-        </div>
+        <Dialog
+        title='Success'
+        message={`Valid coordinates received: ${coordinates}`}
+        onClose={() => setShowConfirmation(false)}
+        />
       )}
+
     </div>
   );
 };

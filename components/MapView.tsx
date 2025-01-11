@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import L, { map } from 'leaflet';
 import prisma from '@/lib/prisma'
 import WarningIcon from './WarningIcon';
 
@@ -50,7 +50,7 @@ const CenterMapButton: React.FC<{ center: [number, number] }> = ({ center }) => 
       className="absolute left-2 top-2 z-[1000] rounded bg-white p-2 shadow"
       onClick={() => map.setView(center, 13)}
     >
-      Center Map
+      Go to your submited location
     </button>
   );
 };
@@ -60,6 +60,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
   const [selectedUser, setSelectedUser] = useState<{ id: string; userData: UserData } | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([0, 0]);
   const [currentPage, setCurrentPage] = useState(1);
+const [isLegendOpen, setIsLegendOpen] = useState(false);
   const usersPerPage = 8;
   const maxPages = 10;
 
@@ -221,17 +222,49 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
 
 
   return (
-    <div className="mt-8">
-      <h4 className="mb-4 text-xl font-semibold">See a map to find users near you</h4>
-      <h5>Click on markers to see their user data below. You can zoom in or out, and you can drag the map to view another area</h5>
-      <br />
-      <h5 className="text-sm">Marker Color Legend:</h5>
-      <ul className="list-disc pl-4 text-xs">
-        <li className="mb-1 text-green-600">Green: 10 or more matches</li>
-        <li className="mb-1 text-yellow-400">Yellow: 9 to 5 matches</li>
-        <li className="mb-1 text-orange-500">Orange: 4 or less matches</li>
+    <div className="mt-8 space-y-2 rounded bg-white p-8 shadow">
+      <h4 className="mb-4 text-xl font-semibold">Find users near you</h4>
+      <h5>You can either:</h5>
+      <ul className='list-disc'>
+        <li>Use the map and click on markers</li>
+        <li>Browse the list of nearby users sorted by distance</li>
       </ul>
-      <h5 className="text-sm">Submit your user data for map markers to reflect this compatibility</h5>
+      <h5>Selecting a user will update the compatibility information below</h5>
+      <h5>You can zoom and pan the map to explore different areas</h5>
+      
+      <br />
+
+      <div className="mt-4">
+        <button
+          className="flex w-full items-center justify-between rounded bg-gray-200 p-2 text-left text-sm font-medium hover:bg-gray-300 focus:outline-none"
+          onClick={() => setIsLegendOpen(!isLegendOpen)}
+        >
+          <span>Marker Color Legend</span>
+          <svg
+            className={`h-5 w-5 transform transition-transform duration-200 ${
+              isLegendOpen ? 'rotate-180' : ''
+            }`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+        {isLegendOpen && (
+          <div className="mt-2 rounded border border-gray-200 p-4">
+            <ul className="list-disc pl-4 text-xs">
+              <li className="mb-1 text-green-600">Green: 10 or more matches</li>
+              <li className="mb-1 text-yellow-400">Yellow: 9 to 5 matches</li>
+              <li className="mb-1 text-orange-500">Orange: 4 or less matches</li>
+            </ul>
+            <h5 className="mt-2 text-sm">Submit your user data for map markers to reflect this compatibility</h5>
+          </div>
+        )}
+      </div>
 
       <br />
 
@@ -263,7 +296,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       </div>
 
       {/* Add a list of all the fetched users in order, from closest to farthest. One page of results for every 10 users. Each user should be a button that when clicked overrides the selected user selection and updates the map by selecting the selected user*/}
-      {/* User list */}
+      {/* Nearby Users list */}
       <div className="mt-8">
         <h4 className="mb-4 text-xl font-semibold">Nearby Users</h4>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -318,7 +351,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       </div>
 
       {selectedUser && userData && (
-        <div className="mt-4 rounded bg-gray-100 p-4">
+        <div className="mt-4 rounded p-4">
           <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
           <p className="text-xl">
             Matches: {calculateMatches(userData, selectedUser.userData)} / 14
@@ -351,20 +384,12 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
           <img 
             src={`/images/user-visual-description/${image.src}`} 
             alt={image.alt} 
-            className="h-10 w-10 cursor-pointer"
-            onClick={() => {
-              console.log(`Clicked on image ${image.alt}`);
-              const titleElement = document.getElementById('imageTitleDisplay');
-              if (titleElement) {
-                titleElement.textContent = image.title;
-                titleElement.style.display = 'block';
-              }
-            }}
+            title={image.title}
+            className="h-10 w-10"
           />
         </div>
       ))}
     </div>
-    <div id="imageTitleDisplay" className="mt-2 rounded bg-gray-200 p-2 text-center"></div>
 
           <br />
 
@@ -379,7 +404,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
         <div className="mt-4 rounded bg-gray-100 p-4">
           <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
             <WarningIcon />
-            Submit your user data to see a comparison with the selected user below
+            Submit your data to view compatibility with selected user
           </p>
           <br />
           <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
@@ -395,7 +420,7 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
       {!selectedUser &&!userData && (
         <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
         <WarningIcon />
-        Please select a user in the map above by clicking on their marker to see your compatibility with them here
+        Please select a user to see your compatibility with them here
       </p>
       )}
 

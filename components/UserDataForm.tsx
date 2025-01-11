@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Dialog from './Dialog'; // Make sure to import the Dialog component
 import WarningIcon from './WarningIcon';
+import SubmitButton from './SubmitButton';
 
 export interface UserData {
   requests: Record<string, boolean>;
@@ -202,6 +203,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
 
         <h3 className="mb-2 mt-6 text-lg font-medium">Appearance</h3>
         <h4>Please answer in order, as several questions update after answering the first one</h4>
+        <h4>Click the checkbox if:</h4>
         <div className="space-y-2">
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -210,7 +212,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.isMale}
               onChange={handleChange}
             />
-            <span>Do you look like a man?</span>
+            <span>You look like a man</span>
           </label>
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -221,8 +223,8 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
             />
             <span>
               {formDataStructure.description.isMale
-                ? "Are you taller than 5'9\" (175 cm)?"
-                : "Are you taller than 5'4\" (162 cm)?"}
+                ? "You are taller than 5'9\" (175 cm)"
+                : "You are taller than 5'4\" (162 cm)"}
             </span>
           </label>
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
@@ -234,8 +236,8 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
             />
             <span>
               {formDataStructure.description.isMale
-                ? "Are you older than 30.3 years?"
-                : "Are you older than 31.8 years?"}
+                ? "You are older than 30 years and 3 months"
+                : "You are older than 31 years and 9 months"}
             </span>
           </label>
 
@@ -246,7 +248,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.isMale ? formDataStructure.description.hasFacialHair : formDataStructure.description.hasLongHair}
               onChange={handleChange}
             />
-            <span>{formDataStructure.description.isMale ? "Do you have facial hair?" : "Does your hair reach below your shoulder?"}</span>
+            <span>{formDataStructure.description.isMale ? "You have facial hair" : "Your hair reaches below your shoulder"}</span>
           </label>
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -255,7 +257,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.wearsGlasses}
               onChange={handleChange}
             />
-            <span>Are you wearing glasses?</span>
+            <span>You are wearing glasses</span>
           </label>
         </div>
 
@@ -313,8 +315,9 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
           </label>
         </div>
 
+        <br />
 
-        <button className="mt-6 rounded bg-sky-300 px-4 py-2 font-bold text-white hover:bg-sky-400" type="submit">Submit</button>
+        <SubmitButton text={'Submit User Data'} />
       </form>
 
       {showDialog && (
