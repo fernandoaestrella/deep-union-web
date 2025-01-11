@@ -58,7 +58,48 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
   const [nearbyUsers, setNearbyUsers] = useState<Array<{ id: string; coordinates: [number, number]; userData: UserData }>>([]);
   const [selectedUser, setSelectedUser] = useState<{ id: string; userData: UserData } | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([0, 0]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 8;
+  const maxPages = 10;
 
+  // Function to calculate distance between two points
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distance in km
+  };
+
+  const getDirection = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const y = Math.sin(dLon) * Math.cos(lat2 * Math.PI / 180);
+    const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+              Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos(dLon);
+    const brng = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    return dirs[Math.round(brng / 45) % 8];
+  };
+
+  // Sort users by distance from the user's location
+  const sortedUsers = nearbyUsers.sort((a, b) => {
+    const [userLat, userLng] = mapCenter;
+    const distA = calculateDistance(userLat, userLng, a.coordinates[0], a.coordinates[1]);
+    const distB = calculateDistance(userLat, userLng, b.coordinates[0], b.coordinates[1]);
+    return distA - distB;
+  });
+  
+    // Get current users for pagination
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+  
+    // Change page
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  
   const calculateMatches = (currentUser: UserData | null, selectedUser: UserData): number => {
     if (!currentUser) return 0;
     let matches = 0;
@@ -219,6 +260,62 @@ const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
 
         </MapContainer>
       </div>
+
+      {/* Add a list of all the fetched users in order, from closest to farthest. One page of results for every 10 users. Each user should be a button that when clicked overrides the selected user selection and updates the map by selecting the selected user*/}
+      {/* User list */}
+      <div className="mt-8">
+        <h4 className="mb-4 text-xl font-semibold">Nearby Users</h4>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {currentUsers.map((user) => {
+            const [userLat, userLng] = mapCenter;
+            const distance = calculateDistance(userLat, userLng, user.coordinates[0], user.coordinates[1]);
+            const direction = getDirection(userLat, userLng, user.coordinates[0], user.coordinates[1]);
+            return (
+              <button
+                key={user.id}
+                className={`flex flex-col items-start rounded p-3 text-sm ${
+                  selectedUser?.id === user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
+                }`}
+                onClick={() => {
+                  setSelectedUser({ id: user.id, userData: user.userData });
+                  const mapElement = document.querySelector('.leaflet-container');
+                  if (mapElement) {
+                    const map = (mapElement as any)._leaflet_map;
+                    if (map) {
+                      map.setView(user.coordinates, 13);
+                    }
+                  }
+                }}
+              >
+                <div className="font-semibold">User {user.id.slice(0, 8)}...</div>
+                <div>Matches: {calculateMatches(userData, user.userData)}</div>
+                <div>{distance.toFixed(2)} km {direction}</div>
+              </button>
+            );
+          })}
+        </div>
+
+
+        {/* Pagination */}
+        <div className="mt-4 flex justify-center">
+          Pages
+          {Array.from({ length: Math.min(Math.ceil(sortedUsers.length / usersPerPage), maxPages) }, (_, i) => (
+            <button
+              key={i}
+              className={`mx-1 rounded px-3 py-1 ${
+                currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
+              }`}
+              onClick={() => paginate(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          {Math.ceil(sortedUsers.length / usersPerPage) > maxPages && (
+            <span className="ml-2 text-gray-600">...</span>
+          )}
+        </div>
+      </div>
+
       {selectedUser && userData && (
         <div className="mt-4 rounded bg-gray-100 p-4">
           <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
