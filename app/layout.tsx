@@ -29,7 +29,10 @@ export default function RootLayout({
         {children}
         <footer>
           <div className='text-center'>
-            More experiments <a className='text-slate-400' href="https://github.com/fernandoaestrella">here</a>
+            More experiments <a className='text-blue-500' href="https://github.com/fernandoaestrella">here</a>
+          </div>
+          <div className='text-center'>
+            If this was useful, you can <a className='text-blue-500' href="https://ko-fi.com/arthurstarlake">tip me</a> on Ko-fi
           </div>
         </footer>
       </body>

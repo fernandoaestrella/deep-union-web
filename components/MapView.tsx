@@ -403,10 +403,29 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
 
           <br />
 
-          <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
-          <pre className="max-h-60 overflow-auto rounded bg-white p-3">
-            {JSON.stringify(selectedUser.userData, null, 2)}
-          </pre>
+          <h5 className="mb-2 text-lg font-medium">If you want to approach the selected user, go</h5>
+          {(() => {
+            const selectedUserCoords = nearbyUsers.find(u => u.id === selectedUser.id)?.coordinates;
+            if (selectedUserCoords && userCoordinates) {
+              const [userLat, userLng] = mapCenter;
+              const distance = calculateDistance(userLat, userLng, selectedUserCoords[0], selectedUserCoords[1]);
+              const direction = getDirection(userLat, userLng, selectedUserCoords[0], selectedUserCoords[1]);
+              return (
+                <p className="text-xl font-semibold">
+                  {distance.toFixed(2)} km {direction}
+                </p>
+              );
+            }
+            return <p className="text-gray-600">Distance and direction unavailable</p>;
+          })()}
+
+          <br />
+
+          <CollapsibleSection title="Selected User Data:">
+            <pre className="max-h-60 overflow-auto rounded bg-white p-3">
+              {JSON.stringify(selectedUser.userData, null, 2)}
+            </pre>
+          </CollapsibleSection>
         </div>
       )}
 
@@ -417,10 +436,11 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
             Submit your data to view compatibility with selected user
           </p>
           <br />
-          <h5 className="mb-2 text-lg font-medium">Selected User Data:</h5>
-          <pre className="max-h-60 overflow-auto rounded bg-white p-3">
-            {JSON.stringify(selectedUser.userData, null, 2)}
-          </pre>
+          <CollapsibleSection title="Selected User Data:">
+            <pre className="max-h-60 overflow-auto rounded bg-white p-3">
+              {JSON.stringify(selectedUser.userData, null, 2)}
+            </pre>
+          </CollapsibleSection>
         </div>
       )}
 

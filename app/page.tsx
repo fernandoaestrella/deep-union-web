@@ -31,8 +31,8 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
         <section className="mb-8 w-full max-w-4xl lg:max-w-2xl">
-      <CollapsibleSection title='Quickstart'>
-          <h2 className="mb-4 text-2xl font-semibold">Quickstart</h2>
+      <CollapsibleSection title='How it works'>
+          <h2 className="mb-4 text-2xl font-semibold">How it works</h2>
           <ol className="space-y-2 rounded bg-white p-8 shadow">
             <li>1. Submit your requests, offers, visual description and current coordinates. They all stay local to you.</li>
             <li>2. You can choose to post everything in our database so others can find you.</li>

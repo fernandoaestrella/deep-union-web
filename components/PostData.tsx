@@ -82,7 +82,7 @@ const PostData: React.FC<PostDataProps> = ({ userData, coordinates }) => {
         {/* Notify users that their data will be deleted automatically */}
         <div className="mb-4">
           <p className="text-gray-600">
-            <b>Please note:</b> All posted data is automatically deleted at midnight Pacific Time every day.
+            <b>Please note:</b> All posted data is automatically deleted at midnight Pacific Standard Time every day.
           </p>
         </div>
 
