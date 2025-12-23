@@ -14,6 +14,11 @@ relatedTemplates:
   - postgres-sveltekit
 ---
 
+# Quickstart
+```
+npm run dev
+```
+
 TO DO:
 - add more description to needs
 - delete records

@@ -33,11 +33,32 @@ export default function Home() {
         <section className="mb-8 w-full max-w-4xl lg:max-w-2xl">
       <CollapsibleSection title='How it works'>
           <h2 className="mb-4 text-2xl font-semibold">How it works</h2>
-          <ol className="space-y-2 rounded bg-white p-8 shadow">
-            <li>1. Submit your requests, offers, visual description and current coordinates. They all stay local to you.</li>
+          <ol className="space-y-6 rounded bg-white p-8 shadow">
+            <li>
+              <p>1. Submit your requests, offers, visual description and current coordinates. They all stay local to you.</p>
+              <div className="mt-4 flex flex-col gap-4">
+                <div className="flex gap-4">
+                  <img src="/images/1a.png" alt="Step 1 - Request form" className="w-1/2 rounded-lg border shadow-sm" />
+                  <img src="/images/1b.png" alt="Step 1 - Offers form" className="w-1/2 rounded-lg border shadow-sm" />
+                </div>
+                <img src="/images/1c.png" alt="Step 1 - Visual description" className="w-full rounded-lg border shadow-sm" />
+              </div>
+            </li>
             <li>2. You can choose to post everything in our database so others can find you.</li>
-            <li>3. Select other users in the Map section to see how well your requests and offers match.</li>
-            <li>4. If you choose to approach them, you can see their visual description so you know how they look, and their distance and direction from your location so you know where to go.</li>
+            <li>
+              <p>3. Select other users in the Map section to see how well your requests and offers match.</p>
+              <div className="mt-4">
+                <img src="/images/3a.png" alt="Step 3 - Map matching" className="w-full rounded-lg border shadow-sm" />
+              </div>
+            </li>
+            <li>
+              <p>4. If you choose to approach them, you can see their visual description so you know how they look, and their distance and direction from your location so you know where to go.</p>
+              <div className="mt-4 flex flex-col gap-4">
+                <img src="/images/4a.png" alt="Step 4 - User details" className="w-full rounded-lg border shadow-sm" />
+                <img src="/images/4b.png" alt="Step 4 - Distance and direction" className="w-full rounded-lg border shadow-sm" />
+                <img src="/images/4c.png" alt="Step 4 - Visuals" className="w-full rounded-lg border shadow-sm" />
+              </div>
+            </li>
           </ol>
       </CollapsibleSection>
         </section>
