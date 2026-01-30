@@ -74,7 +74,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ currentLang }) => {
                   href={getLocalizedPath(lang.code)}
                   onClick={() => setIsOpen(false)}
                   className={`flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-slate-700 ${
-                    lang.code === currentLang ? 'bg-slate-700 font-semibold' : ''
+                    lang.code === currentLang ? 'bg-slate-600 font-semibold' : ''
                   }`}
                 >
                   <span className="text-2xl">{lang.flag}</span>
