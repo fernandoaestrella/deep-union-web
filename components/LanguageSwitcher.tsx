@@ -73,7 +73,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ currentLang }) => {
                   key={lang.code}
                   href={getLocalizedPath(lang.code)}
                   onClick={() => setIsOpen(false)}
-                  className={`flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-100 ${
+                  className={`flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-200 ${
                     lang.code === currentLang ? 'bg-blue-50 font-semibold' : ''
                   }`}
                 >
