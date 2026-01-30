@@ -272,7 +272,7 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
                   click: () => setSelectedUser({ id: user.id, userData: user.userData }),
                 }}
               >
-                <Popup>{t('map.nearbyUsersUser')} {user.id} ({t('map.nearbyUsersMatches', { matches, total: 14 })})</Popup>
+                <Popup>{t('map.nearbyUsersUser')} {user.id} ({t('map.nearbyUsersMatches')} {matches})</Popup>
               </Marker>
             );
           })}
@@ -309,7 +309,7 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
                   }}
                 >
                   <div className="font-semibold">{t('map.nearbyUsersUser')} {user.id.slice(0, 8)}...</div>
-                  <div>{t('map.compatibilityMatches', { matches: calculateMatches(userData, user.userData), total: 14 })}</div>
+                  <div>{t('map.compatibilityMatches')} {calculateMatches(userData, user.userData)}</div>
                   <div>{distance.toFixed(2)} km {direction}</div>
                 </button>
               );
@@ -352,7 +352,7 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         <div className="mt-4 rounded p-4">
           <h5 className="mb-2 text-lg font-medium">{t('map.compatibilityTitle')}</h5>
           <p className="text-xl">
-            {t('map.compatibilityMatches', { matches: calculateMatches(userData, selectedUser.userData), total: 14 })}
+            {t('map.compatibilityMatches')} {calculateMatches(userData, selectedUser.userData)}
           </p>
 
           <br />
