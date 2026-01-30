@@ -66,7 +66,7 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ currentLang }) => {
             className="fixed inset-0 z-40" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+          <div className="absolute right-0 mt-2 w-48 rounded-md bg-gray-100 shadow-lg ring-1 ring-black ring-opacity-5 z-50">
             <div className="py-1">
               {languages.map((lang) => (
                 <Link
