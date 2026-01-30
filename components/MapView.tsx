@@ -122,7 +122,7 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
   };
 
   const generateCompatibilityDescription = (currentUser: UserData | null, selectedUser: UserData): string => {
-    if (!currentUser) return t('map.compatibilityDescriptionTitle');
+    if (!currentUser) return t('map.warningSubmitData');
 
     const needs = ['Preservation', 'Gratification', 'Definition', 'Acceptance', 'Expression', 'Reflection', 'Knowledge'];
     let description = "";
@@ -235,8 +235,8 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         <li>{t('map.instructionsUseMap')}</li>
         <li>{t('map.instructionsBrowseList')}</li>
       </ul>
-      <h5>{t('map.instructionsSelect')}</h5>
-      <h5>{t('map.instructionsZoom')}</h5>
+      <h5>{t('map.instructions2')}</h5>
+      <h5>{t('map.instructions3')}</h5>
       
       <br />
 

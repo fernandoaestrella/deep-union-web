@@ -26,3 +26,4 @@ export const config = {
     '/((?!_next|api|favicon.ico|images|.*\\..*|locales).*)',
   ],
 };
+

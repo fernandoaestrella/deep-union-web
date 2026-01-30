@@ -6,3 +6,4 @@ export const defaultLocale: Locale = 'en';
 export type Dictionary = {
   [key: string]: string | Dictionary;
 };
+

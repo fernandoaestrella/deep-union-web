@@ -90,3 +90,4 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ currentLang }) => {
 };
 
 export default LanguageSwitcher;
+
