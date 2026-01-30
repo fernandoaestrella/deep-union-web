@@ -169,7 +169,15 @@
     "visualLowerColor": "下身服装颜色：",
     "directionTitle": "如果您想接近所选用户请前往",
     "directionUnavailable": "距离和方向不可用",
-    "selectedUserData": "所选用户数据："
+    "selectedUserData": "所选用户数据：",
+    "directionN": "北",
+    "directionNE": "东北",
+    "directionE": "东",
+    "directionSE": "东南",
+    "directionS": "南",
+    "directionSW": "西南",
+    "directionW": "西",
+    "directionNW": "西北"
   },
   "dialog": {
     "success": "成功",

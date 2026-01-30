@@ -169,7 +169,15 @@
     "visualLowerColor": "निचले कपड़ों का रंग:",
     "directionTitle": "यदि आप चयनित उपयोगकर्ता के पास जाना चाहते हैं तो जाएं",
     "directionUnavailable": "दूरी और दिशा अनुपलब्ध",
-    "selectedUserData": "चयनित उपयोगकर्ता डेटा:"
+    "selectedUserData": "चयनित उपयोगकर्ता डेटा:",
+    "directionN": "उ",
+    "directionNE": "उ-पू",
+    "directionE": "पू",
+    "directionSE": "द-पू",
+    "directionS": "द",
+    "directionSW": "द-प",
+    "directionW": "प",
+    "directionNW": "उ-प"
   },
   "dialog": {
     "success": "सफलता",

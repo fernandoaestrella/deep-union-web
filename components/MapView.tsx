@@ -88,8 +88,9 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
     const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
               Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos(dLon);
     const brng = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
-    const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-    return dirs[Math.round(brng / 45) % 8];
+    const dirKeys = ['directionN', 'directionNE', 'directionE', 'directionSE', 'directionS', 'directionSW', 'directionW', 'directionNW'];
+    const dirKey = dirKeys[Math.round(brng / 45) % 8];
+    return t(`map.${dirKey}`);
   };
 
   // Sort users by distance from the user's location

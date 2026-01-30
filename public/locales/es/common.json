@@ -169,7 +169,15 @@
     "visualLowerColor": "Color de ropa inFerior:",
     "directionTitle": "Si quieres acercarte al usuario seleccionado, camina",
     "directionUnavailable": "Distancia y dirección no disponibles",
-    "selectedUserData": "Datos del usuario seleccionado:"
+    "selectedUserData": "Datos del usuario seleccionado:",
+    "directionN": "N",
+    "directionNE": "NE",
+    "directionE": "E",
+    "directionSE": "SE",
+    "directionS": "S",
+    "directionSW": "SO",
+    "directionW": "O",
+    "directionNW": "NO"
   },
   "dialog": {
     "success": "Éxito",
