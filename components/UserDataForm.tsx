@@ -1,7 +1,10 @@
+'use client'
+
 import React, { useState } from 'react';
-import Dialog from './Dialog'; // Make sure to import the Dialog component
+import Dialog from './Dialog';
 import WarningIcon from './WarningIcon';
 import SubmitButton from './SubmitButton';
+import { useTranslation } from '@/lib/i18n/client';
 
 export interface UserData {
   requests: Record<string, boolean>;
@@ -23,6 +26,7 @@ interface UserDataFormProps {
 }
 
 const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
+    const { t } = useTranslation();
     const [showDialog, setShowDialog] = useState(false);
     const [dialogMessage, setDialogMessage] = useState('');
     const [upperColorWarning, setUpperColorWarning] = useState(false);
@@ -74,7 +78,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
                   onChange={(e) => handleCategoryChange(section, category, e.target.checked)}
                   className="mr-2"
                 />
-                <span>{category}</span>
+                <span>{t(`need.${category}`)}</span>
               </label>
               <button
                 type="button"
@@ -114,28 +118,10 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
   };
 
   const getExplanation = (section: 'requests' | 'offers', category: string): string => {
-    const explanations: Record<string, Record<string, string>> = {
-      requests: {
-        Preservation: "e.g. ask for something needed for your survival",
-        Gratification: "e.g. ask someone to join you in a game",
-        Definition: "e.g. ask for help in a great project",
-        Acceptance: "e.g. face your fears",
-        Expression: "e.g. say what has been hard to say",
-        Reflection: "e.g. find clarity and truth about how you limit yourself without your awareness",
-        Knowledge: "e.g. let your identity be universal"
-      },
-      offers: {
-        Preservation: "e.g. provide for someone's survival",
-        Gratification: "e.g. join someone's game",
-        Definition: "e.g. help someone succeed in a great project",
-        Acceptance: "e.g. help someone grow by facing their fears",
-        Expression: "e.g. listen to someone and try to uncover what they are really trying to say but can't",
-        Reflection: "e.g. find ways in which others are limiting themselves and humbly suggest playful ways to notice and break those limitations",
-        Knowledge: "e.g. let your identity be universal"
-      }
-    };
-
-    return explanations[section][category] || "No explanation available";
+    const explanationKey = section === 'requests' 
+      ? `need.explanationRequest${category}` 
+      : `need.explanationOffer${category}`;
+    return t(explanationKey);
   };
 
   const handleCategoryChange = (section: 'requests' | 'offers', category: string, checked: boolean) => {
@@ -165,7 +151,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
     // Validate color selections
     if (!formDataStructure.description.upperColor || !formDataStructure.description.lowerColor) {
       setShowDialog(true);
-      setDialogMessage('Please select both upper and lower body clothing colors.');
+      setDialogMessage(t('userDataForm.validationError'));
       setUpperColorWarning(!formDataStructure.description.upperColor);
       setLowerColorWarning(!formDataStructure.description.lowerColor);
       return;
@@ -179,7 +165,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
     };
     onSubmit(formData);
     setShowDialog(true);
-    setDialogMessage('Your user data has been updated successfully.');
+    setDialogMessage(t('userDataForm.success'));
   };
 
   const ColorWarning = ({ message }: { message: string }) => (
@@ -193,17 +179,17 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
   return (
     <>
       <form className="rounded bg-white p-6 shadow" onSubmit={handleSubmit}>
-        <h4 className="mb-4 text-xl font-semibold">Define your requests, offers, and how you look</h4>
+        <h4 className="mb-4 text-xl font-semibold">{t('userDataForm.title')}</h4>
 
-        <h3 className="mb-2 mt-6 text-lg font-medium">Requests</h3>
+        <h3 className="mb-2 mt-6 text-lg font-medium">{t('userDataForm.requests')}</h3>
         {renderCheckboxes('requests')}
 
-        <h3 className="mb-2 mt-6 text-lg font-medium">Offers</h3>
+        <h3 className="mb-2 mt-6 text-lg font-medium">{t('userDataForm.offers')}</h3>
         {renderCheckboxes('offers')}
 
-        <h3 className="mb-2 mt-6 text-lg font-medium">Appearance</h3>
-        <h4>Please answer in order, as several questions update after answering the first one</h4>
-        <h4>Click the checkbox if:</h4>
+        <h3 className="mb-2 mt-6 text-lg font-medium">{t('userDataForm.appearance')}</h3>
+        <h4>{t('userDataForm.appearanceInstruction1')}</h4>
+        <h4>{t('userDataForm.appearanceInstruction2')}</h4>
         <div className="space-y-2">
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -212,7 +198,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.isMale}
               onChange={handleChange}
             />
-            <span>You look like a man</span>
+            <span>{t('userDataForm.isMale')}</span>
           </label>
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -223,8 +209,8 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
             />
             <span>
               {formDataStructure.description.isMale
-                ? "You are taller than 5'9\" (175 cm)"
-                : "You are taller than 5'4\" (162 cm)"}
+                ? t('userDataForm.isTallerMale')
+                : t('userDataForm.isTallerFemale')}
             </span>
           </label>
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
@@ -236,8 +222,8 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
             />
             <span>
               {formDataStructure.description.isMale
-                ? "You are older than 30 years and 3 months"
-                : "You are older than 31 years and 9 months"}
+                ? t('userDataForm.isOlderMale')
+                : t('userDataForm.isOlderFemale')}
             </span>
           </label>
 
@@ -248,7 +234,7 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.isMale ? formDataStructure.description.hasFacialHair : formDataStructure.description.hasLongHair}
               onChange={handleChange}
             />
-            <span>{formDataStructure.description.isMale ? "You have facial hair" : "Your hair reaches below your shoulder"}</span>
+            <span>{formDataStructure.description.isMale ? t('userDataForm.hasFacialHair') : t('userDataForm.hasLongHair')}</span>
           </label>
           <label className="flex items-center space-x-2 rounded bg-sky-100 p-2">
             <input
@@ -257,14 +243,14 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               checked={formDataStructure.description.wearsGlasses}
               onChange={handleChange}
             />
-            <span>You are wearing glasses</span>
+            <span>{t('userDataForm.wearsGlasses')}</span>
           </label>
         </div>
 
         <div className="mt-4 space-y-2">
-          {upperColorWarning && <ColorWarning message="Please select an upper body clothing color." />}
+          {upperColorWarning && <ColorWarning message={t('userDataForm.colorWarningUpper')} />}
           <label className="block">
-            <span className="mb-1 block">Upper body clothing color:</span>
+            <span className="mb-1 block">{t('userDataForm.upperColor')}</span>
             <select 
               name="upperColor" 
               value={formDataStructure.description.upperColor} 
@@ -274,26 +260,26 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               }} 
               className="w-full rounded border p-2"
             >
-              <option value="">Select color</option>
-              <option value="white">White</option>
-              <option value="black">Black</option>
-              <option value="gray">Gray</option>
-              <option value="brown">Brown</option>
-              <option value="red">Red</option>
-              <option value="green">Green</option>
-              <option value="blue">Blue</option>
-              <option value="purple">Purple</option>
-              <option value="orange">Orange</option>
-              <option value="yellow">Yellow</option>
-              <option value="none">None</option>
+              <option value="">{t('userDataForm.selectColor')}</option>
+              <option value="white">{t('color.white')}</option>
+              <option value="black">{t('color.black')}</option>
+              <option value="gray">{t('color.gray')}</option>
+              <option value="brown">{t('color.brown')}</option>
+              <option value="red">{t('color.red')}</option>
+              <option value="green">{t('color.green')}</option>
+              <option value="blue">{t('color.blue')}</option>
+              <option value="purple">{t('color.purple')}</option>
+              <option value="orange">{t('color.orange')}</option>
+              <option value="yellow">{t('color.yellow')}</option>
+              <option value="none">{t('color.none')}</option>
             </select>
           </label>
         </div>
 
         <div className="mt-2 space-y-2">
-          {lowerColorWarning && <ColorWarning message="Please select a lower body clothing color." />}
+          {lowerColorWarning && <ColorWarning message={t('userDataForm.colorWarningLower')} />}
           <label className="block">
-            <span className="mb-1 block">Lower body clothing color:</span>
+            <span className="mb-1 block">{t('userDataForm.lowerColor')}</span>
             <select 
               name="lowerColor" 
               value={formDataStructure.description.lowerColor} 
@@ -303,26 +289,26 @@ const UserDataForm: React.FC<UserDataFormProps> = ({ onSubmit }) => {
               }} 
               className="w-full rounded border p-2"
             >
-              <option value="">Select color</option>
-              <option value="white">White</option>
-              <option value="black">Black</option>
-              <option value="gray">Gray</option>
-              <option value="brown">Brown</option>
-              <option value="blue">Blue</option>
-              <option value="other">Other (i.e. a color not included above)</option>
-              <option value="none">None</option>
+              <option value="">{t('userDataForm.selectColor')}</option>
+              <option value="white">{t('color.white')}</option>
+              <option value="black">{t('color.black')}</option>
+              <option value="gray">{t('color.gray')}</option>
+              <option value="brown">{t('color.brown')}</option>
+              <option value="blue">{t('color.blue')}</option>
+              <option value="other">{t('color.other')}</option>
+              <option value="none">{t('color.none')}</option>
             </select>
           </label>
         </div>
 
         <br />
 
-        <SubmitButton text={'Submit User Data'} />
+        <SubmitButton text={t('userDataForm.submitButton')} />
       </form>
 
       {showDialog && (
         <Dialog
-          title={dialogMessage.includes('successfully') ? 'Success' : 'Error'}
+          title={dialogMessage.includes(t('userDataForm.success')) ? t('dialog.success') : t('dialog.error')}
           message={dialogMessage}
           onClose={() => setShowDialog(false)}
         />
