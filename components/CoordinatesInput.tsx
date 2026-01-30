@@ -1,12 +1,16 @@
+'use client'
+
 import React, { useState } from 'react';
 import SubmitButton from './SubmitButton';
 import Dialog from './Dialog';
+import { useTranslation } from '@/lib/i18n/client';
 
 interface CoordinatesInputProps {
   onSubmit: (coordinates: string) => void;
 }
 
 const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
+  const { t } = useTranslation();
   const [coordinates, setCoordinates] = useState('');
   const [error, setError] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -29,17 +33,17 @@ const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
       setShowConfirmation(true);
       onSubmit(coordinates);  // Call the onSubmit prop with the valid coordinates
     } else {
-      setError('Invalid coordinates. Please use either decimal or DMS format.');
+      setError(t('coordinates.error'));
     }
   };
 
   return (
     <div className="mx-auto mt-4 w-full rounded bg-white p-6 shadow">
-      <h4 className="mb-2 text-lg font-semibold">Input your current coordinates e.g. as Google Maps provides it</h4>
+      <h4 className="mb-2 text-lg font-semibold">{t('coordinates.title')}</h4>
       <p className="mb-4 text-sm text-gray-600">
-        Examples of valid coordinates:<br />
-        <b>DMS:</b> 10°58&apos;40&quot;N 76°44&apos;07&quot;E (this is how Google Maps provides it)<br />
-        <b>Decimal:</b> 10.9780, 76.7353<br />
+        {t('coordinates.examples')}<br />
+        <b>DMS:</b> {t('coordinates.dms')}<br />
+        <b>Decimal:</b> {t('coordinates.decimal')}<br />
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -47,17 +51,17 @@ const CoordinatesInput: React.FC<CoordinatesInputProps> = ({ onSubmit }) => {
             type="text"
             value={coordinates}
             onChange={(e) => setCoordinates(e.target.value)}
-            placeholder="Enter your coordinates here"
+            placeholder={t('coordinates.placeholder')}
             className="w-full rounded-md border px-3 py-2 text-gray-700 placeholder-gray-400 focus:border-blue-500 focus:outline-none"
           />
           {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
         </div>
-        <SubmitButton text="Submit Coordinates" />
+        <SubmitButton text={t('coordinates.submitButton')} />
       </form>
       {showConfirmation && (
         <Dialog
-        title='Success'
-        message={`Valid coordinates received: ${coordinates}`}
+        title={t('dialog.success')}
+        message={`${t('coordinates.success')} ${coordinates}`}
         onClose={() => setShowConfirmation(false)}
         />
       )}
