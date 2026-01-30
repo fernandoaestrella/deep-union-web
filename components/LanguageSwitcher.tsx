@@ -66,15 +66,15 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ currentLang }) => {
             className="fixed inset-0 z-40" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+          <div className="absolute right-0 mt-2 w-48 rounded-md bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5 z-50">
             <div className="py-1">
               {languages.map((lang) => (
                 <Link
                   key={lang.code}
                   href={getLocalizedPath(lang.code)}
                   onClick={() => setIsOpen(false)}
-                  className={`flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-100 ${
-                    lang.code === currentLang ? 'bg-blue-50 font-semibold' : ''
+                  className={`flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-white hover:bg-slate-700 ${
+                    lang.code === currentLang ? 'bg-slate-600 font-semibold' : ''
                   }`}
                 >
                   <span className="text-2xl">{lang.flag}</span>

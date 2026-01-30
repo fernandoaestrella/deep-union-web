@@ -104,8 +104,8 @@
   "coordinates": {
     "title": "输入您当前的坐标例如 Google Maps 提供的坐标",
     "examples": "有效坐标示例：",
-    "dms": "DMS：10°58'40\"N 76°44'07\"E（这是 Google Maps 提供的方式）",
-    "decimal": "十进制：10.9780 76.7353",
+    "dms": "10°58'40\"N 76°44'07\"E（这是 Google Maps 提供的方式）",
+    "decimal": "10.9780, 76.7353",
     "placeholder": "在此输入您的坐标",
     "error": "坐标无效。请使用十进制或 DMS 格式。",
     "submitButton": "提交坐标",

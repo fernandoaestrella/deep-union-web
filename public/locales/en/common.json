@@ -104,8 +104,8 @@
   "coordinates": {
     "title": "Input your current coordinates e.g. as Google Maps provides it",
     "examples": "Examples of valid coordinates:",
-    "dms": "DMS: 10°58'40\"N 76°44'07\"E (this is how Google Maps provides it)",
-    "decimal": "Decimal: 10.9780 76.7353",
+    "dms": "10°58'40\"N 76°44'07\"E (this is how Google Maps provides it)",
+    "decimal": "10.9780, 76.7353",
     "placeholder": "Enter your coordinates here",
     "error": "Invalid coordinates. Please use either decimal or DMS format.",
     "submitButton": "Submit Coordinates",
