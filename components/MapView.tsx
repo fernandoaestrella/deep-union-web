@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -5,6 +7,7 @@ import L, { map } from 'leaflet';
 import prisma from '@/lib/prisma'
 import WarningIcon from './WarningIcon';
 import CollapsibleSection from './CollapsibleSection';
+import { useTranslation } from '@/lib/i18n/client';
 
 // Add this new custom icon setup
 const customIcon = new L.Icon({
@@ -46,17 +49,19 @@ interface MapViewProps {
 
 const CenterMapButton: React.FC<{ center: [number, number] }> = ({ center }) => {
   const map = useMap();
+  const { t } = useTranslation();
   return (
     <button
       className="absolute left-2 top-2 z-[1000] rounded bg-white p-2 shadow"
       onClick={() => map.setView(center, 13)}
     >
-      Go to your submited location
+      {t('map.buttonCenter')}
     </button>
   );
 };
 
 const MapView: React.FC<MapViewProps> = ({ userCoordinates, userData }) => {
+  const { t } = useTranslation();
   const [nearbyUsers, setNearbyUsers] = useState<Array<{ id: string; coordinates: [number, number]; userData: UserData }>>([]);
   const [selectedUser, setSelectedUser] = useState<{ id: string; userData: UserData } | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([0, 0]);
@@ -117,21 +122,21 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
   };
 
   const generateCompatibilityDescription = (currentUser: UserData | null, selectedUser: UserData): string => {
-    if (!currentUser) return "Please submit your user data to see compatibility details.";
+    if (!currentUser) return t('map.compatibilityDescriptionTitle');
 
     const needs = ['Preservation', 'Gratification', 'Definition', 'Acceptance', 'Expression', 'Reflection', 'Knowledge'];
     let description = "";
 
     needs.forEach(need => {
       if (currentUser.offers[need] && selectedUser.requests[need]) {
-        description += `• You can offer ${need} to the selected user!\n`;
+        description += `• ${t('map.compatibilityDescriptionCanOffer', { need: t(`need.${need}`) })}\n`;
       }
       if (currentUser.requests[need] && selectedUser.offers[need]) {
-        description += `• You can request ${need} from the selected user!\n`;
+        description += `• ${t('map.compatibilityDescriptionCanRequest', { need: t(`need.${need}`) })}\n`;
       }
     });
 
-    return description.trim() || "No direct matches found.";
+    return description.trim() || t('map.compatibilityDescriptionNoMatches');
   };
   // Function to convert coordinates string to [number, number]
   const convertCoordinates = (coords: string): [number, number] => {
@@ -224,25 +229,25 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   return (
     <div className="mt-8 space-y-2 rounded bg-white p-8 shadow">
-      <h4 className="mb-4 text-xl font-semibold">Find users near you</h4>
-      <h5>You can either:</h5>
+      <h4 className="mb-4 text-xl font-semibold">{t('map.title')}</h4>
+      <h5>{t('map.instructions1')}</h5>
       <ul className='list-disc'>
-        <li>Use the map and click on markers</li>
-        <li>Browse the list of nearby users sorted by distance</li>
+        <li>{t('map.instructionsUseMap')}</li>
+        <li>{t('map.instructionsBrowseList')}</li>
       </ul>
-      <h5>Selecting a user will update the compatibility information below</h5>
-      <h5>You can zoom and pan the map to explore different areas</h5>
+      <h5>{t('map.instructionsSelect')}</h5>
+      <h5>{t('map.instructionsZoom')}</h5>
       
       <br />
 
       {/* Marker Color Legend */}
-      <CollapsibleSection title="Marker Color Legend">
+      <CollapsibleSection title={t('map.legendTitle')}>
         <ul className="list-disc pl-4 text-xs">
-          <li className="mb-1 text-green-600">Green: 10 or more matches</li>
-          <li className="mb-1 text-yellow-400">Yellow: 9 to 5 matches</li>
-          <li className="mb-1 text-orange-500">Orange: 4 or less matches</li>
+          <li className="mb-1 text-green-600">{t('map.legendGreen')}</li>
+          <li className="mb-1 text-yellow-400">{t('map.legendYellow')}</li>
+          <li className="mb-1 text-orange-500">{t('map.legendOrange')}</li>
         </ul>
-        <h5 className="mt-2 text-sm">Submit your user data for map markers to reflect this compatibility</h5>
+        <h5 className="mt-2 text-sm">{t('map.legendNote')}</h5>
       </CollapsibleSection>
 
       <br />
@@ -267,7 +272,7 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
                   click: () => setSelectedUser({ id: user.id, userData: user.userData }),
                 }}
               >
-                <Popup>User {user.id} (Matches: {matches} out of 14)</Popup>
+                <Popup>{t('map.nearbyUsersUser')} {user.id} ({t('map.nearbyUsersMatches', { matches, total: 14 })})</Popup>
               </Marker>
             );
           })}
@@ -276,12 +281,12 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
       </div>
 
       {/* Nearby Users list */}
-      <CollapsibleSection title='Nearby Users list'>
+      <CollapsibleSection title={t('map.nearbyUsersTitle')}>
         <div className="mt-8">
-          <h4 className="mb-4 text-xl font-semibold">Nearby Users</h4>
+          <h4 className="mb-4 text-xl font-semibold">{t('map.nearbyUsersTitle')}</h4>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {/* if no users have posted data, notify this */}
-            {currentUsers.length === 0 && <p>No users have posted data yet.</p>}
+            {currentUsers.length === 0 && <p>{t('map.nearbyUsersNoUsers')}</p>}
             {currentUsers.map((user) => {
               const [userLat, userLng] = mapCenter;
               const distance = calculateDistance(userLat, userLng, user.coordinates[0], user.coordinates[1]);
@@ -303,8 +308,8 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
                     }
                   }}
                 >
-                  <div className="font-semibold">User {user.id.slice(0, 8)}...</div>
-                  <div>Matches: {calculateMatches(userData, user.userData)}</div>
+                  <div className="font-semibold">{t('map.nearbyUsersUser')} {user.id.slice(0, 8)}...</div>
+                  <div>{t('map.compatibilityMatches', { matches: calculateMatches(userData, user.userData), total: 14 })}</div>
                   <div>{distance.toFixed(2)} km {direction}</div>
                 </button>
               );
@@ -338,41 +343,41 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         <div className="mt-4">
           <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
             <WarningIcon />
-            Please select a user to see your compatibility with them here
+            {t('map.warningSelectUser')}
           </p>
         </div>
       )}
 
       {selectedUser && userData && (
         <div className="mt-4 rounded p-4">
-          <h5 className="mb-2 text-lg font-medium">Compatibility with Selected User:</h5>
+          <h5 className="mb-2 text-lg font-medium">{t('map.compatibilityTitle')}</h5>
           <p className="text-xl">
-            Matches: {calculateMatches(userData, selectedUser.userData)} / 14
+            {t('map.compatibilityMatches', { matches: calculateMatches(userData, selectedUser.userData), total: 14 })}
           </p>
 
           <br />
           
-          <h5 className="mb-2 text-lg font-medium">Compatibility Description</h5>
+          <h5 className="mb-2 text-lg font-medium">{t('map.compatibilityDescriptionTitle')}</h5>
           <pre className="whitespace-pre-wrap rounded bg-white p-3">
             {generateCompatibilityDescription(userData, selectedUser.userData)}
           </pre>
 
           <br />
 
-          <h5 className="mb-2 text-lg font-medium">Selected User&apos;s Visual Description</h5>
+          <h5 className="mb-2 text-lg font-medium">{t('map.visualTitle')}</h5>
           
           <div className="flex flex-wrap gap-2">
             {[
-              { src: `${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`, alt: "Gender", title: selectedUser.userData.description.isMale ? "Male" : "Female" },
-              { src: `${selectedUser.userData.description.isTaller ? 'tall' : 'small'}.png`, alt: "Height", title: selectedUser.userData.description.isTaller ? "Taller" : "Shorter" },
-              { src: `${selectedUser.userData.description.isOlder ? 'old' : 'young'}.png`, alt: "Age", title: selectedUser.userData.description.isOlder ? "Older" : "Younger" },
+              { src: `${selectedUser.userData.description.isMale ? 'male' : 'female'}.png`, alt: t('map.visualGender'), title: selectedUser.userData.description.isMale ? t('map.visualMale') : t('map.visualFemale') },
+              { src: `${selectedUser.userData.description.isTaller ? 'tall' : 'small'}.png`, alt: t('map.visualHeight'), title: selectedUser.userData.description.isTaller ? t('map.visualTaller') : t('map.visualShorter') },
+              { src: `${selectedUser.userData.description.isOlder ? 'old' : 'young'}.png`, alt: t('map.visualAge'), title: selectedUser.userData.description.isOlder ? t('map.visualOlder') : t('map.visualYounger') },
               ...(selectedUser.userData.description.isMale 
-                ? [{ src: `${selectedUser.userData.description.hasFacialHair ? 'male_bearded' : 'male_shaved'}.png`, alt: "Facial Hair", title: selectedUser.userData.description.hasFacialHair ? "Has Facial Hair" : "No Facial Hair" }]
-                : [{ src: `${selectedUser.userData.description.hasLongHair ? 'long_hair' : 'short_hair'}.png`, alt: "Hair Length", title: selectedUser.userData.description.hasLongHair ? "Long Hair" : "Short Hair" }]
+                ? [{ src: `${selectedUser.userData.description.hasFacialHair ? 'male_bearded' : 'male_shaved'}.png`, alt: t('map.visualFacialHair'), title: selectedUser.userData.description.hasFacialHair ? t('map.visualHasFacialHair') : t('map.visualNoFacialHair') }]
+                : [{ src: `${selectedUser.userData.description.hasLongHair ? 'long_hair' : 'short_hair'}.png`, alt: t('map.visualHairLength'), title: selectedUser.userData.description.hasLongHair ? t('map.visualLongHair') : t('map.visualShortHair') }]
               ),
-              { src: `${selectedUser.userData.description.wearsGlasses ? 'glasses' : 'no_glasses'}.png`, alt: "Glasses", title: selectedUser.userData.description.wearsGlasses ? "Wears Glasses" : "No Glasses" },
-              { src: `top_${selectedUser.userData.description.upperColor.toLowerCase()}.png`, alt: "Upper Clothing Color", title: `Upper Clothing Color: ${selectedUser.userData.description.upperColor}` },
-              { src: `bottom_${selectedUser.userData.description.lowerColor.toLowerCase()}.png`, alt: "Lower Clothing Color", title: `Lower Clothing Color: ${selectedUser.userData.description.lowerColor}` },
+              { src: `${selectedUser.userData.description.wearsGlasses ? 'glasses' : 'no_glasses'}.png`, alt: t('map.visualGlasses'), title: selectedUser.userData.description.wearsGlasses ? t('map.visualWearsGlasses') : t('map.visualNoGlasses') },
+              { src: `top_${selectedUser.userData.description.upperColor.toLowerCase()}.png`, alt: t('map.visualUpperClothingColor'), title: t('map.visualUpperColor', { color: t(`color.${selectedUser.userData.description.upperColor}`) }) },
+              { src: `bottom_${selectedUser.userData.description.lowerColor.toLowerCase()}.png`, alt: t('map.visualLowerClothingColor'), title: t('map.visualLowerColor', { color: t(`color.${selectedUser.userData.description.lowerColor}`) }) },
             ].map((image, index) => (
               <div key={index} className="relative">
                 <img 
@@ -396,14 +401,14 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
               </div>
             ))}
           </div>
-          <p className="mb-2 text-sm text-gray-600">Tap an icon to see what it means below</p>
+          <p className="mb-2 text-sm text-gray-600">{t('map.visualInstruction')}</p>
           <div className="mb-2 h-8 text-sm italic text-gray-700" id="iconDescription">
-            Icon description will be here
+            {t('map.visualIconDescriptionDefault')}
           </div>
 
           <br />
 
-          <h5 className="mb-2 text-lg font-medium">If you want to approach the selected user, go</h5>
+          <h5 className="mb-2 text-lg font-medium">{t('map.directionTitle')}</h5>
           {(() => {
             const selectedUserCoords = nearbyUsers.find(u => u.id === selectedUser.id)?.coordinates;
             if (selectedUserCoords && userCoordinates) {
@@ -416,12 +421,12 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
                 </p>
               );
             }
-            return <p className="text-gray-600">Distance and direction unavailable</p>;
+            return <p className="text-gray-600">{t('map.directionUnavailable')}</p>;
           })()}
 
           <br />
 
-          <CollapsibleSection title="Selected User Data:">
+          <CollapsibleSection title={t('map.selectedUserData')}>
             <pre className="max-h-60 overflow-auto rounded bg-white p-3">
               {JSON.stringify(selectedUser.userData, null, 2)}
             </pre>
@@ -433,10 +438,10 @@ const [isLegendOpen, setIsLegendOpen] = useState(false);
         <div className="mt-4 rounded bg-gray-100 p-4">
           <p className="flex items-center rounded border border-yellow-400 bg-yellow-100 p-3 text-yellow-600">
             <WarningIcon />
-            Submit your data to view compatibility with selected user
+            {t('map.warningSubmitData')}
           </p>
           <br />
-          <CollapsibleSection title="Selected User Data:">
+          <CollapsibleSection title={t('map.selectedUserData')}>
             <pre className="max-h-60 overflow-auto rounded bg-white p-3">
               {JSON.stringify(selectedUser.userData, null, 2)}
             </pre>
